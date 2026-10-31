@@ -3,6 +3,9 @@
   "name": "bluetext",
   "main": "src/index.js",
   "compatibility_date": "2026-10-01",
+  // relay.marmot.to is a Cloudflare Tunnel on this same zone. Without this flag,
+  // same-zone fetch() skips the public route and times out (HTTP 522).
+  "compatibility_flags": ["global_fetch_strictly_public"],
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
