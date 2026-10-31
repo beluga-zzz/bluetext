@@ -6,6 +6,12 @@
   // relay.marmot.to is a Cloudflare Tunnel on this same zone. Without this flag,
   // same-zone fetch() skips the public route and times out (HTTP 522).
   "compatibility_flags": ["global_fetch_strictly_public"],
+  // bluetext.marmot.to = the app. marmot.to/bluetext = the landing page
+  // (public/bluetext/). The more specific route wins over creativerize's marmot.to/*.
+  "routes": [
+    { "pattern": "bluetext.marmot.to", "custom_domain": true },
+    { "pattern": "marmot.to/bluetext*", "zone_name": "marmot.to" }
+  ],
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
