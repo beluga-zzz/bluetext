@@ -40,7 +40,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
-button { cursor: pointer; border: 0; border-radius: 10px; padding: 8px 14px; background: none; }
+button { white-space: nowrap; cursor: pointer; border: 0; border-radius: 10px; padding: 8px 14px; background: none; }
 button:disabled { opacity: .5; cursor: default; }
 .primary { background: var(--blue); color: #fff; font-weight: 600; }
 .primary:hover:not(:disabled) { background: var(--blue-press); }
@@ -162,6 +162,7 @@ input[type=color] { padding: 2px; width: 44px; height: 38px; flex: none; }
 .gate[hidden] { display: none; }
 .gate-logo { width: 200px; margin: 0 auto; }
 .gate p { color: var(--muted); max-width: 420px; }
+.login { display: flex; gap: 8px; width: min(320px, 86vw); margin: 0 auto; }
 .toast {
   position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
   background: #1C1C1E; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 14px;

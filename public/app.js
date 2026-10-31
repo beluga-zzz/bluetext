@@ -93,9 +93,11 @@ async function boot() {
   try {
     state.me = await api("me");
   } catch (e) {
+    if (e.status === 401) return showLogin();
     return showGate(e.message);
   }
-  $("userEmail").textContent = state.me.email;
+  $("gate").hidden = true;
+  $("logoutBtn").hidden = false;
   $("adminBtn").hidden = !state.me.isAdmin;
   const list = state.me.workspaces;
   if (!list.length) {
@@ -114,8 +116,37 @@ async function boot() {
   startPolling();
 }
 
+function showLogin(msg = "") {
+  $("gate").hidden = false;
+  $("gateText").textContent = msg;
+  $("loginForm").hidden = false;
+  $("loginPw").value = "";
+  $("loginPw").focus();
+}
+
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector("button");
+  btn.disabled = true;
+  try {
+    await api("login", { method: "POST", body: { password: $("loginPw").value } });
+    $("loginForm").hidden = true;
+    await boot();
+  } catch (err) {
+    showLogin(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$("logoutBtn").addEventListener("click", async () => {
+  try { await api("logout", { method: "POST" }); } catch {}
+  location.reload();
+});
+
 function showGate(text, adminCta = false) {
   $("gate").hidden = false;
+  $("loginForm").hidden = true;
   $("gateText").innerHTML = esc(text) + (adminCta ? `<br><br><button class="primary" id="gateAdmin">Open Admin</button>` : "");
   if (adminCta) {
     $("adminBtn").hidden = false;

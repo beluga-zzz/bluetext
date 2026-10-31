@@ -16,7 +16,7 @@
     <div class="topbar-right">
       <button id="tagsBtn" class="ghost" hidden>Tags</button>
       <button id="adminBtn" class="ghost" hidden>Admin</button>
-      <span id="userEmail" class="user"></span>
+      <button id="logoutBtn" class="ghost" hidden>Sign out</button>
     </div>
   </header>
 
@@ -57,6 +57,10 @@
   <div id="gate" class="gate" hidden>
     <img src="/logo.svg" alt="Blue Text" class="gate-logo">
     <p id="gateText"></p>
+    <form id="loginForm" class="login" hidden>
+      <input id="loginPw" type="password" placeholder="Password" autocomplete="current-password" required>
+      <button class="primary">Sign in</button>
+    </form>
   </div>
 
   <dialog id="newDialog" class="dialog">

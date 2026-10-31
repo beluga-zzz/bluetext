@@ -49,74 +49,74 @@ const json = (data, status = 200) =>
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
   });
 
-// ---------- Auth (Cloudflare Access) ----------
+// ---------- Auth (single app password) ----------
+// One password gates the whole app. Override with an APP_PASSWORD secret.
+const DEFAULT_PASSWORD = "blue33!";
+const COOKIE = "bt_session";
+const SESSION_DAYS = 30;
 
-let certCache = { team: null, keys: null, at: 0 };
-
-function b64urlToBytes(s) {
-  s = s.replace(/-/g, "+").replace(/_/g, "/");
-  while (s.length % 4) s += "=";
-  const bin = atob(s);
-  const out = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-  return out;
+function appPassword(env) {
+  return env.APP_PASSWORD || DEFAULT_PASSWORD;
 }
 
-async function getAccessKeys(team) {
-  if (certCache.team === team && certCache.keys && Date.now() - certCache.at < 3600_000) {
-    return certCache.keys;
-  }
-  const res = await fetch(`https://${team}/cdn-cgi/access/certs`);
-  if (!res.ok) throw new HttpError(500, "Could not load Cloudflare Access keys");
-  const { keys } = await res.json();
-  certCache = { team, keys, at: Date.now() };
-  return keys;
-}
-
-async function verifyAccessJwt(token, env) {
-  const team = String(env.ACCESS_TEAM_DOMAIN).replace(/^https?:\/\//, "").replace(/\/$/, "");
-  const parts = token.split(".");
-  if (parts.length !== 3) throw new HttpError(401, "Bad login token");
-  const header = JSON.parse(new TextDecoder().decode(b64urlToBytes(parts[0])));
-  const payload = JSON.parse(new TextDecoder().decode(b64urlToBytes(parts[1])));
-  const keys = await getAccessKeys(team);
-  const jwk = keys.find((k) => k.kid === header.kid);
-  if (!jwk) throw new HttpError(401, "Unknown login key");
+async function sessionToken(env) {
   const key = await crypto.subtle.importKey(
-    "jwk", jwk, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]
+    "raw", new TextEncoder().encode(appPassword(env)), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
   );
-  const ok = await crypto.subtle.verify(
-    "RSASSA-PKCS1-v1_5", key, b64urlToBytes(parts[2]),
-    new TextEncoder().encode(`${parts[0]}.${parts[1]}`)
-  );
-  if (!ok) throw new HttpError(401, "Invalid login token");
-  const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-  if (!aud.includes(env.ACCESS_AUD)) throw new HttpError(401, "Login token is for another app");
-  if (payload.exp * 1000 < Date.now()) throw new HttpError(401, "Login expired");
-  if (payload.iss !== `https://${team}`) throw new HttpError(401, "Login token issuer mismatch");
-  if (!payload.email) throw new HttpError(401, "Login token has no email");
-  return String(payload.email).toLowerCase();
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("bluetext-session-v1"));
+  return btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/[+/=]/g, (c) => ({ "+": "-", "/": "_", "=": "" }[c]));
 }
+
+function safeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let r = 0;
+  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return r === 0;
+}
+
+function readCookie(request, name) {
+  const raw = request.headers.get("cookie") || "";
+  for (const part of raw.split(";")) {
+    const [k, ...v] = part.trim().split("=");
+    if (k === name) return v.join("=");
+  }
+  return null;
+}
+
+const USER = "team";
 
 async function getUser(request, env) {
   const host = new URL(request.url).hostname;
-  if (env.DEV_EMAIL && (host === "localhost" || host === "127.0.0.1")) {
-    return String(env.DEV_EMAIL).toLowerCase();
-  }
-  if (!env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD) {
-    throw new HttpError(503, "Login is not configured yet. Set ACCESS_TEAM_DOMAIN and ACCESS_AUD.");
-  }
-  const token = request.headers.get("Cf-Access-Jwt-Assertion");
-  if (!token) throw new HttpError(401, "Not signed in");
-  return verifyAccessJwt(token, env);
+  if (env.DEV_EMAIL && (host === "localhost" || host === "127.0.0.1")) return USER;
+  const token = readCookie(request, COOKIE);
+  if (token && safeEqual(token, await sessionToken(env))) return USER;
+  throw new HttpError(401, "Not signed in");
 }
 
-function isAdmin(email, env) {
-  return String(env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean)
-    .includes(email);
+function isAdmin() {
+  return true;
+}
+
+async function handleLogin(request, env) {
+  const body = await readBody(request);
+  const ok = typeof body.password === "string" && safeEqual(body.password, appPassword(env));
+  if (!ok) {
+    await new Promise((r) => setTimeout(r, 800)); // slow down guessing
+    throw new HttpError(401, "Wrong password");
+  }
+  const secure = new URL(request.url).protocol === "https:" ? "; Secure" : "";
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: {
+      "content-type": "application/json",
+      "set-cookie": `${COOKIE}=${await sessionToken(env)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_DAYS * 86400}${secure}`,
+    },
+  });
+}
+
+function handleLogout() {
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { "content-type": "application/json", "set-cookie": `${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0` },
+  });
 }
 
 // ---------- Helpers ----------
@@ -463,6 +463,8 @@ export default {
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
     try {
       await ensureSchema(env);
+      if (url.pathname === "/api/login" && request.method === "POST") return await handleLogin(request, env);
+      if (url.pathname === "/api/logout" && request.method === "POST") return handleLogout();
       const email = await getUser(request, env);
       const segs = url.pathname.replace(/^\/api\//, "").split("/").filter(Boolean);
       if (segs[0] === "me" && request.method === "GET") return handleMe(env, email);
