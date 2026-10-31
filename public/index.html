@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0A84FF">
+  <title>Blue Text</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <img src="/logo.svg" alt="Blue Text" class="logo">
+    <select id="wsSelect" class="ws-select" aria-label="Workspace" hidden></select>
+    <div class="topbar-right">
+      <button id="tagsBtn" class="ghost" hidden>Tags</button>
+      <button id="adminBtn" class="ghost" hidden>Admin</button>
+      <span id="userEmail" class="user"></span>
+    </div>
+  </header>
+
+  <main id="app" class="app">
+    <section class="pane list-pane">
+      <div class="list-tools">
+        <input id="search" type="search" placeholder="Search name, number, message" autocomplete="off">
+        <button id="newBtn" class="primary" title="New message">New</button>
+      </div>
+      <div id="tagFilter" class="tag-filter"></div>
+      <div id="chatList" class="chat-list" role="list"></div>
+    </section>
+
+    <section class="pane thread-pane">
+      <div id="emptyThread" class="empty">
+        <img src="/logo.svg" alt="" class="empty-logo">
+        <p>Pick a conversation or start a new one.</p>
+      </div>
+      <div id="thread" class="thread" hidden>
+        <div class="thread-head">
+          <button id="backBtn" class="ghost back" aria-label="Back">&#8249;</button>
+          <div class="thread-title">
+            <div id="threadName" class="thread-name"></div>
+            <div id="threadSub" class="thread-sub"></div>
+          </div>
+          <button id="renameBtn" class="ghost small" hidden>Edit name</button>
+        </div>
+        <div id="threadTags" class="thread-tags"></div>
+        <div id="messages" class="messages"></div>
+        <form id="composer" class="composer">
+          <textarea id="composeText" rows="1" placeholder="iMessage" autocomplete="off"></textarea>
+          <button id="sendBtn" type="submit" class="send" aria-label="Send">&#8593;</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div id="gate" class="gate" hidden>
+    <img src="/logo.svg" alt="Blue Text" class="gate-logo">
+    <p id="gateText"></p>
+  </div>
+
+  <dialog id="newDialog" class="dialog">
+    <form method="dialog" id="newForm">
+      <h2>New message</h2>
+      <label>To<input id="newTo" type="tel" placeholder="(480) 555-1234" required></label>
+      <label>Message<textarea id="newText" rows="4" required></textarea></label>
+      <div class="dialog-actions">
+        <button value="cancel" class="ghost" formnovalidate>Cancel</button>
+        <button id="newSend" value="send" class="primary">Send</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="tagsDialog" class="dialog">
+    <div>
+      <h2>Tags</h2>
+      <div id="tagsEditor" class="tags-editor"></div>
+      <form id="addTagForm" class="row">
+        <input id="addTagName" placeholder="New tag name" required>
+        <input id="addTagColor" type="color" value="#0A84FF" aria-label="Tag color">
+        <button class="primary">Add</button>
+      </form>
+      <div class="dialog-actions"><button class="ghost" data-close>Done</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="adminDialog" class="dialog wide">
+    <div>
+      <h2>Workspaces</h2>
+      <p class="hint">Each workspace is one client line: its own BlueBubbles server and its own team.</p>
+      <div id="wsAdminList" class="ws-admin-list"></div>
+      <h3>Add a workspace</h3>
+      <form id="addWsForm" class="stack">
+        <input id="wsName" placeholder="Client name" required>
+        <input id="wsUrl" type="url" placeholder="https://relay.example.com" required>
+        <input id="wsPw" type="password" placeholder="BlueBubbles password" required>
+        <button class="primary">Add workspace</button>
+      </form>
+      <div class="dialog-actions"><button class="ghost" data-close>Done</button></div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
