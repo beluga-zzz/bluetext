@@ -1,6 +1,7 @@
-// Blue Text: Cloudflare Worker API.
-// Serves /api/* and proxies to each workspace's BlueBubbles server.
-// Static UI in /public is served by Workers Assets.
+// B2Blue: Cloudflare Worker.
+// app.b2blue.chat  -> the inbox app (/public) and its API (/api/*)
+// b2blue.chat      -> the landing page (/public/site)
+// Old marmot.to addresses redirect; their /api/hooks/* URLs keep working.
 
 import { AUTOMATION_SCHEMA, handleCalHook, handleBbHook, runCron, automationView, automationUpdate } from "./automation.js";
 
@@ -38,6 +39,9 @@ async function ensureSchema(env) {
   schemaReady = true;
 }
 
+const SITE_URL = "https://b2blue.chat";
+const APP_URL = "https://app.b2blue.chat";
+
 class HttpError extends Error {
   constructor(status, message) {
     super(message);
@@ -54,7 +58,7 @@ const json = (data, status = 200) =>
 // ---------- Auth (single app password) ----------
 // One password gates the whole app. Override with an APP_PASSWORD secret.
 const DEFAULT_PASSWORD = "blue33!";
-const COOKIE = "bt_session";
+const COOKIE = "b2_session";
 const SESSION_DAYS = 30;
 
 function appPassword(env) {
@@ -65,7 +69,7 @@ async function sessionToken(env) {
   const key = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(appPassword(env)), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
   );
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("bluetext-session-v1"));
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("b2blue-session-v1"));
   return btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/[+/=]/g, (c) => ({ "+": "-", "/": "_", "=": "" }[c]));
 }
 
@@ -481,7 +485,21 @@ async function handleWorkspace(request, env, email, wsId, segs) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
+    const host = env.DEV_HOST || url.hostname;
+    const isApi = url.pathname.startsWith("/api/");
+
+    // Landing page
+    if (host === "www.b2blue.chat") return Response.redirect(SITE_URL + url.pathname, 301);
+    if (host === "b2blue.chat") {
+      if (url.pathname === "/") return env.ASSETS.fetch(new Request(new URL("/site/", url), request));
+      if (url.pathname.startsWith("/site/") || url.pathname === "/favicon.svg") return env.ASSETS.fetch(request);
+      return Response.redirect(SITE_URL + "/", 302);
+    }
+    // Old addresses
+    if (host === "marmot.to" || host === "www.marmot.to") return Response.redirect(SITE_URL + "/", 301);
+    if (host === "bluetext.marmot.to" && !isApi) return Response.redirect(APP_URL + url.pathname + url.search, 302);
+
+    if (!isApi) return env.ASSETS.fetch(request);
     try {
       await ensureSchema(env);
       if (url.pathname === "/api/login" && request.method === "POST") return await handleLogin(request, env);

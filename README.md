@@ -1,4 +1,4 @@
-# Blue Text
+# B2Blue
 
 A branded iMessage inbox for client lines. Each workspace is one client: its own BlueBubbles server (one Mac + iPhone number) and its own team. Lead tags and contact names are stored in Cloudflare D1.
 

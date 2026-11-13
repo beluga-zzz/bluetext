@@ -64,7 +64,7 @@ input[type=color] { padding: 2px; width: 44px; height: 38px; flex: none; }
   display: flex; align-items: center; gap: 14px;
   padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
 }
-.logo { height: 34px; display: block; }
+.logo { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
 .ws-select { width: auto; max-width: 240px; padding: 6px 10px; font-weight: 600; }
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
 .user { color: var(--muted); font-size: 13px; margin-left: 8px; }
@@ -105,7 +105,7 @@ input[type=color] { padding: 2px; width: 44px; height: 38px; flex: none; }
 /* Thread */
 .thread-pane { background: var(--panel); }
 .empty { flex: 1; display: grid; place-content: center; text-align: center; color: var(--muted); gap: 12px; }
-.empty-logo { width: 160px; margin: 0 auto; opacity: .9; }
+.empty-logo { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
 .thread { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .thread[hidden] { display: none; }
 .thread-head { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
@@ -160,7 +160,7 @@ input[type=color] { padding: 2px; width: 44px; height: 38px; flex: none; }
 /* Gate + toast */
 .gate { position: fixed; inset: 0; background: var(--bg); display: grid; place-content: center; text-align: center; gap: 16px; padding: 24px; }
 .gate[hidden] { display: none; }
-.gate-logo { width: 200px; margin: 0 auto; }
+.gate-logo { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
 .gate p { color: var(--muted); max-width: 420px; }
 .login { display: flex; gap: 8px; width: min(320px, 86vw); margin: 0 auto; }
 .toast {
@@ -178,7 +178,7 @@ input[type=color] { padding: 2px; width: 44px; height: 38px; flex: none; }
   body.in-thread .thread-pane { display: flex; }
   .back { display: block; }
   .user { display: none; }
-  .logo { height: 28px; }
+  .logo { font-size: 18px; }
   .ws-select { max-width: 140px; }
   .bubble { max-width: 82%; }
 }

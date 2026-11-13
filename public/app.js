@@ -1,4 +1,4 @@
-// Blue Text front end. Plain JS, no build step.
+// B2Blue front end. Plain JS, no build step.
 
 const $ = (id) => document.getElementById(id);
 const state = {
