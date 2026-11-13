@@ -109,6 +109,7 @@ class Page extends Component {
         n: i + 1, done, todo: !done,
         eyebrow: '0' + (i + 1) + ' · ' + d[0], title: d[1], body: d[2], tags: d[3],
         eyebrowFg: active || done ? accent : '#8E8E93',
+        stepCls: i < fs ? 'fl-done' : '',
         textO: i === fs ? 1 : 0.4,
         m0: i === 0, m1: i === 1, m2: i === 2, m3: i === 3, m4: i === 4,
         bg: done ? accent : active ? '#E8F1FF' : '#FFFFFF',
@@ -124,7 +125,10 @@ class Page extends Component {
       accent,
       flowRef: (el) => { this.flowEl = el; },
       steps,
-      railFill: (fs / 4 * 100) + '%',
+      navCls: this.state.navOpen ? 'nav-open' : '',
+      navOpen: Boolean(this.state.navOpen),
+      toggleNav: () => this.setState({ navOpen: !this.state.navOpen }),
+      closeNav: () => this.setState({ navOpen: false }),
       sA: scene(fs === 0),
       sB: scene(fs === 1),
       sC: scene(fs === 2),
@@ -177,15 +181,21 @@ class Page extends Component {
       extraYear: extraYear.toLocaleString('en-US'),
     };
   }
+  toggleCal() {
+    const open = !this.state.calOpen;
+    this.setState({ calOpen: open });
+    if (open && !this.calLoaded && window.b2Cal) { this.calLoaded = true; window.b2Cal('b2bluehero', '#cal-hero'); }
+  }
   render() {
     const v = this.renderVals();
     return html`<div style="font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #0B0B10; background: #FFFFFF; width: 100%; -webkit-font-smoothing: antialiased">
 
 
 <header style="background: #FFFFFF; border-bottom: 1px solid #ECECF0">
-<nav style="max-width: 1180px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap">
+<nav style="max-width: 1180px; margin: 0 auto; padding: 10px 24px; min-height: 44px; display: flex; align-items: center; gap: 0 28px; flex-wrap: wrap">
 <a href="#top" style="color: #000000; font-size: 15px; font-weight: 600">B2Blue</a>
-<div style="display: flex; gap: 24px; flex: 1; flex-wrap: wrap; font-size: 15px">
+<button type="button" class="nav-burger" aria-label="Menu" aria-expanded=${v.navOpen} onClick=${v.toggleNav}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<div class="nav-links ${v.navCls}" onClick=${v.closeNav}>
 <a href="#flow" style="color: #55576A">How it works</a>
 <a href="#funnel" style="color: #55576A">Your funnel</a>
 <a href="#why" style="color: #55576A">Why iMessage</a>
@@ -198,8 +208,9 @@ class Page extends Component {
 <section id="top" style="background: #FFFFFF; color: #0B0B10; padding: 96px 24px 88px">
 <div style="max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px">
 <h1 style="margin: 0; font-size: clamp(38px, 6vw, 68px); line-height: 1.03; letter-spacing: -0.04em; font-weight: 800">3x show rates with automated iMessages</h1>
-<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #55576A; max-width: 600px">Turn every booked demo into a real conversation. Native blue bubbles, AI-written follow-ups and one shared inbox, built for B2B sales teams.</p>
-<a href="#book" style="background: ${v.accent}; color: #FFFFFF; padding: 16px 30px; border-radius: 14px; font-weight: 600; font-size: 17px">Book a demo</a>
+<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #55576A; max-width: 600px">Turn every booked demo into a real conversation. Personalized texts sent from real iPhones. Built for B2B sales teams.</p>
+<button type="button" onClick=${() => this.toggleCal()} aria-expanded=${Boolean(this.state.calOpen)} style="border: 0; cursor: pointer; font-family: inherit; background: ${v.accent}; color: #FFFFFF; padding: 16px 30px; border-radius: 14px; font-weight: 600; font-size: 17px">${this.state.calOpen ? "Close calendar" : "Book a demo"}</button>
+<div style="width: min(1040px, calc(100vw - 32px)); overflow: hidden; transition: max-height .5s ease, opacity .4s ease; max-height: ${this.state.calOpen ? "1400px" : "0px"}; opacity: ${this.state.calOpen ? 1 : 0}"><div id="cal-hero" style="min-height: 560px; border-radius: 16px; overflow: auto"></div></div>
 <div style="display: flex; gap: 10px 28px; flex-wrap: wrap; justify-content: center; font-size: 14px; color: #6E6E73">
 <span>Real iPhone numbers</span><span>No A2P registration</span><span>Month to month</span>
 </div>
@@ -215,9 +226,8 @@ class Page extends Component {
 </div>
 <div class="fl-grid">
 <div class="fl-steps">
-<div class="fl-rail" aria-hidden="true"><div class="fl-rail-fill" style="height: ${v.railFill}; background: ${v.accent}"></div></div>
 ${(v.steps).map((st, $index) => html`
-<div class="fl-step" data-flow-step="1">
+<div class="fl-step ${st.stepCls}" data-flow-step="1">
 <div style="flex: none; position: relative; z-index: 1; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 15px; border: 2px solid ${st.border}; background: ${st.bg}; color: ${st.fg}; box-shadow: ${st.ring}; transition: background .3s, border-color .3s, box-shadow .3s">
 ${(st.done) ? html`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>` : null}
 ${(st.todo) ? html`<span>${st.n}</span>` : null}

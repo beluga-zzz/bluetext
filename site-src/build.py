@@ -53,6 +53,13 @@ for m in TOKEN.finditer(dyn):
     else: out.append("${" + ref(m.group("hole")) + "}")
 out.append(dyn[pos:])
 tpl = "".join(out)
+hero_btn = re.search(r'<a href="#book" style="([^"]*)">Book a demo</a>', tpl)
+tpl = tpl.replace(hero_btn.group(0),
+    '<button type="button" onClick=${() => this.toggleCal()} aria-expanded=${Boolean(this.state.calOpen)} style="border: 0; cursor: pointer; font-family: inherit; '
+    + hero_btn.group(1) + '">${this.state.calOpen ? "Close calendar" : "Book a demo"}</button>\n'
+    '<div style="width: min(1040px, calc(100vw - 32px)); overflow: hidden; transition: max-height .5s ease, opacity .4s ease; '
+    'max-height: ${this.state.calOpen ? "1400px" : "0px"}; opacity: ${this.state.calOpen ? 1 : 0}">'
+    '<div id="cal-hero" style="min-height: 560px; border-radius: 16px; overflow: auto"></div></div>', 1)
 assert not scope and "{{" not in tpl and "sc-if" not in tpl and "sc-for" not in tpl
 
 # ---------- logic class ----------
@@ -62,6 +69,8 @@ js = (
     'import { html, Component, render } from "./htm-preact.js";\n\n'
     + "class Page extends Component {"
     + logic[len("class Component extends DCLogic {"): cls_end].replace("Component.MSG", "Page.MSG")
+    + "  toggleCal() {\n    const open = !this.state.calOpen;\n    this.setState({ calOpen: open });\n"
+      "    if (open && !this.calLoaded && window.b2Cal) { this.calLoaded = true; window.b2Cal('b2bluehero', '#cal-hero'); }\n  }\n"
     + "  render() {\n    const v = this.renderVals();\n    return html`" + tpl + "`;\n  }\n}"
     + logic[cls_end + 1:].replace("Component.MSG", "Page.MSG")
     + '\n\nrender(html`<${Page} />`, document.getElementById("root"));\n'
@@ -79,11 +88,14 @@ cta = f'''<section id="book" style="padding: 0 24px 96px">
 </div>
 </section>'''
 cal = '''(function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-Cal("init", "b2blue", { origin: "https://app.cal.com" });
 Cal.config = Cal.config || {};
 Cal.config.forwardQueryParams = true;
-Cal.ns.b2blue("inline", { elementOrSelector: "#cal-inline", config: { layout: "month_view", useSlotsViewOnSmallScreen: "true", theme: "light" }, calLink: "%s" });
-Cal.ns.b2blue("ui", { theme: "light", hideEventTypeDetails: false, layout: "month_view" });''' % CAL_LINK
+window.b2Cal = function (ns, selector) {
+  Cal("init", ns, { origin: "https://app.cal.com" });
+  Cal.ns[ns]("inline", { elementOrSelector: selector, config: { layout: "month_view", useSlotsViewOnSmallScreen: "true", theme: "light" }, calLink: "%s" });
+  Cal.ns[ns]("ui", { theme: "light", hideEventTypeDetails: false, layout: "month_view" });
+};
+window.b2Cal("b2blue", "#cal-inline");''' % CAL_LINK
 head_css = helmet.replace("<style>", "<style>\nhtml{scroll-behavior:smooth}")
 title = re.search(r"<title>(.*?)</title>", src).group(1)
 desc = "Automated iMessage confirmations and reminders for B2B sales teams, sent from real iPhone numbers."
@@ -108,10 +120,10 @@ page = f'''<!doctype html>
 {cta}
 {footer}
 </div>
-<script type="module" src="/site/page.js"></script>
 <script>
 {cal}
 </script>
+<script type="module" src="/site/page.js"></script>
 </body>
 </html>
 '''
