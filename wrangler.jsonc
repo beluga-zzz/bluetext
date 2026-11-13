@@ -25,5 +25,7 @@
       "database_id": "d9bf1abe-7bfa-452e-aa17-bd56aead13ef"
     }
   ],
+  // Sends queued B2Blue texts and checks delivery every minute.
+  "triggers": { "crons": ["* * * * *"] },
   "observability": { "enabled": true }
 }

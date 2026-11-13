@@ -104,6 +104,48 @@
     </div>
   </dialog>
 
+  <dialog id="autoDialog" class="dialog wide">
+    <form id="autoForm">
+      <h2>Automation <span id="autoWsName" class="hint"></span></h2>
+      <p class="hint">Cal.com bookings get a confirmation text, a reminder about 24 hours before and one about an hour before. Every text is logged on the HubSpot contact.</p>
+      <label class="switch-row"><input id="autoEnabled" type="checkbox"> <span>Automation on</span></label>
+
+      <h3>1. HubSpot</h3>
+      <label>Access token<input id="autoHs" type="password" autocomplete="off" placeholder="Paste the token from your HubSpot app"></label>
+      <p class="hint" id="autoHsState"></p>
+
+      <h3>2. Cal.com</h3>
+      <label>Webhook URL (paste into Cal.com &rarr; Settings &rarr; Developer &rarr; Webhooks)
+        <div class="row"><input id="autoCalUrl" readonly><button type="button" class="ghost small" data-copy="autoCalUrl">Copy</button></div></label>
+      <label>Webhook secret (make one up, paste the same value in Cal.com)<input id="autoCalSecret" type="password" autocomplete="off"></label>
+      <p class="hint" id="autoCalState"></p>
+
+      <h3>3. BlueBubbles (replies)</h3>
+      <label>Webhook URL (BlueBubbles &rarr; API &amp; Webhooks &rarr; Add webhook, event "New Messages")
+        <div class="row"><input id="autoBbUrl" readonly><button type="button" class="ghost small" data-copy="autoBbUrl">Copy</button></div></label>
+
+      <h3>4. Messages</h3>
+      <div class="row">
+        <label style="flex:1">Sender first name<input id="autoSender" placeholder="Jacob"></label>
+        <label style="flex:1">Company<input id="autoCompany" placeholder="B2Blue"></label>
+        <label style="width:140px">New contacts / day<input id="autoCap" type="number" min="1" max="200"></label>
+      </div>
+      <p class="hint">Use {first_name}, {sender}, {company}, {day} and {time}. Times show in the prospect's time zone.</p>
+      <label>Confirmation (sent right after booking)<textarea id="tpl_confirm" rows="2"></textarea></label>
+      <label>Reschedule confirmation<textarea id="tpl_reschedule" rows="2"></textarea></label>
+      <label>About 24 hours before<textarea id="tpl_24h" rows="2"></textarea></label>
+      <label>About 1 hour before<textarea id="tpl_1h" rows="2"></textarea></label>
+
+      <h3>Recent activity</h3>
+      <div id="autoLog" class="auto-log"></div>
+
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close>Close</button>
+        <button class="primary" id="autoSave">Save</button>
+      </div>
+    </form>
+  </dialog>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="/app.js" type="module"></script>
 </body>

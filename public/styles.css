@@ -182,3 +182,15 @@ input[type=color] { padding: 2px; width: 44px; height: 38px; flex: none; }
   .ws-select { max-width: 140px; }
   .bubble { max-width: 82%; }
 }
+
+/* Automation */
+.switch-row { display: flex !important; flex-direction: row; align-items: center; gap: 10px; color: var(--text) !important; font-size: 15px !important; }
+.switch-row input { width: auto; }
+.auto-log { display: grid; gap: 6px; max-height: 280px; overflow-y: auto; }
+.auto-row { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; display: grid; gap: 2px; }
+.auto-row .meta { color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
+.auto-row .st { font-weight: 600; }
+.st-sent, .st-delivered { color: #1A7F37; }
+.st-pending { color: var(--blue); }
+.st-failed, .st-undelivered { color: var(--danger); }
+.st-cancelled, .st-unconfirmed { color: var(--muted); }

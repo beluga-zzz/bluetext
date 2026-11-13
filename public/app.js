@@ -403,6 +403,7 @@ async function renderAdmin() {
       <div class="ws-card" data-id="${esc(w.id)}">
         <div class="ws-card-head">
           <strong>${esc(w.name)}</strong>
+          <button class="ghost small" data-auto>Automation</button>
           <button class="ghost small" data-test>Test connection</button>
           <button class="ghost small danger" data-delws>Delete</button>
         </div>
@@ -567,7 +568,9 @@ $("wsAdminList").addEventListener("click", async (e) => {
   if (!card) return;
   const id = card.dataset.id;
   try {
-    if (e.target.closest("[data-test]")) {
+    if (e.target.closest("[data-auto]")) {
+      await openAutomation(id, card.querySelector("strong").textContent);
+    } else if (e.target.closest("[data-test]")) {
       await api(`admin/workspaces/${id}/test`, { method: "POST" });
       toast("Connected. The server answered.");
     } else if (e.target.closest("[data-delws]")) {
@@ -592,6 +595,62 @@ $("wsAdminList").addEventListener("submit", async (e) => {
     await renderAdmin();
   } catch (err) { toast(err.message); }
 });
+
+// ---------- automation ----------
+let autoWs = null;
+const TPL_KEYS = ["tpl_confirm", "tpl_reschedule", "tpl_24h", "tpl_1h"];
+const KIND = { confirm: "Confirmation", reschedule: "Reschedule", r24: "24h reminder", r1: "1h reminder" };
+
+function fillAutomation(v) {
+  $("autoEnabled").checked = v.enabled;
+  $("autoHs").value = "";
+  $("autoHsState").textContent = v.hubspotConnected ? `Connected (token ending ${v.hubspotTokenEnd}). Paste a new one to replace it.` : "Not connected yet.";
+  $("autoCalUrl").value = v.calWebhookUrl;
+  $("autoCalSecret").value = "";
+  $("autoCalState").textContent = v.calSecretSet ? "Secret saved. Enter a new one only to change it." : "No secret yet. Cal.com bookings are rejected until you set one.";
+  $("autoBbUrl").value = v.bbWebhookUrl;
+  $("autoSender").value = v.senderName;
+  $("autoCompany").value = v.company;
+  $("autoCap").value = v.dailyCap;
+  for (const k of TPL_KEYS) $(k).value = v.templates[k];
+  $("autoLog").innerHTML = v.log.length ? v.log.map((r) => `
+    <div class="auto-row">
+      <div class="meta"><span class="st st-${esc(r.status)}">${esc(r.status)}</span><span>${esc(KIND[r.kind] || r.kind)}</span>
+        <span>${esc(r.name || fmtPhone(r.phone))}</span><span>${esc(new Date(r.sent_at || r.send_at).toLocaleString())}</span>
+        ${r.hs_logged ? "<span>Logged in HubSpot</span>" : ""}</div>
+      <div>${esc(r.body)}</div>
+      ${r.error ? `<div class="meta">${esc(r.error)}</div>` : ""}
+    </div>`).join("") : `<p class="hint">Nothing yet. Book a test call on your Cal.com page.</p>`;
+}
+
+async function openAutomation(id, name) {
+  autoWs = id;
+  $("autoWsName").textContent = name;
+  fillAutomation(await api(`admin/workspaces/${id}/automation`));
+  $("autoDialog").showModal();
+}
+
+$("autoForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const body = {
+    enabled: $("autoEnabled").checked,
+    senderName: $("autoSender").value,
+    company: $("autoCompany").value,
+    dailyCap: $("autoCap").value,
+    templates: Object.fromEntries(TPL_KEYS.map((k) => [k, $(k).value])),
+  };
+  if ($("autoHs").value.trim()) body.hubspotToken = $("autoHs").value.trim();
+  if ($("autoCalSecret").value.trim()) body.calSecret = $("autoCalSecret").value.trim();
+  $("autoSave").disabled = true;
+  try {
+    fillAutomation(await api(`admin/workspaces/${autoWs}/automation`, { method: "PUT", body }));
+    toast("Saved");
+  } catch (err) { toast(err.message); }
+  $("autoSave").disabled = false;
+});
+document.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($(b.dataset.copy).value); toast("Copied"); } catch { $(b.dataset.copy).select(); }
+}));
 
 document.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => b.closest("dialog").close()));
 

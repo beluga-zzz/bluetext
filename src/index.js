@@ -2,6 +2,8 @@
 // Serves /api/* and proxies to each workspace's BlueBubbles server.
 // Static UI in /public is served by Workers Assets.
 
+import { AUTOMATION_SCHEMA, handleCalHook, handleBbHook, runCron, automationView, automationUpdate } from "./automation.js";
+
 const DEFAULT_TAGS = [
   ["New", "#0A84FF"],
   ["Contacted", "#5E5CE6"],
@@ -32,7 +34,7 @@ const SCHEMA = [
 let schemaReady = false;
 async function ensureSchema(env) {
   if (schemaReady) return;
-  await env.DB.batch(SCHEMA.map((s) => env.DB.prepare(s)));
+  await env.DB.batch([...SCHEMA, ...AUTOMATION_SCHEMA].map((s) => env.DB.prepare(s)));
   schemaReady = true;
 }
 
@@ -173,6 +175,12 @@ async function bb(ws, path, { method = "GET", query = {}, body } = {}) {
   return data;
 }
 
+function publicOrigin(request) {
+  const u = new URL(request.url);
+  const local = u.hostname === "localhost" || u.hostname === "127.0.0.1";
+  return local ? u.origin : `https://${u.host}`;
+}
+
 async function loadWorkspace(env, id) {
   const ws = await env.DB.prepare("SELECT * FROM workspaces WHERE id = ?").bind(id).first();
   if (!ws) throw new HttpError(404, "Workspace not found");
@@ -276,7 +284,7 @@ async function handleAdmin(request, env, segs) {
 
   if (!sub && method === "DELETE") {
     await env.DB.batch(
-      ["contact_tags", "contacts", "tags", "members"].map((t) =>
+      ["contact_tags", "contacts", "tags", "members", "outbox", "bookings", "automation"].map((t) =>
         env.DB.prepare(`DELETE FROM ${t} WHERE workspace_id = ?`).bind(id))
         .concat(env.DB.prepare("DELETE FROM workspaces WHERE id = ?").bind(id))
     );
@@ -286,6 +294,19 @@ async function handleAdmin(request, env, segs) {
   if (sub === "test" && method === "POST") {
     const r = await bb(ws, "ping");
     return json({ ok: true, reply: r.data });
+  }
+
+  if (sub === "automation" && method === "GET") {
+    return json(await automationView(env, ws, publicOrigin(request)));
+  }
+  if (sub === "automation" && method === "PUT") {
+    try {
+      await automationUpdate(env, ws, await readBody(request));
+    } catch (e) {
+      if (e instanceof HttpError) throw e;
+      throw new HttpError(400, e.message);
+    }
+    return json(await automationView(env, ws, publicOrigin(request)));
   }
 
   if (sub === "members" && method === "POST") {
@@ -465,6 +486,15 @@ export default {
       await ensureSchema(env);
       if (url.pathname === "/api/login" && request.method === "POST") return await handleLogin(request, env);
       if (url.pathname === "/api/logout" && request.method === "POST") return handleLogout();
+      // Webhooks from Cal.com and BlueBubbles authenticate with their own secrets, not the app password.
+      const hook = /^\/api\/hooks\/(cal|bb)\/([\w-]+)$/.exec(url.pathname);
+      if (hook && request.method === "POST") {
+        const ws = await loadWorkspace(env, hook[2]);
+        const r = hook[1] === "cal"
+          ? await handleCalHook(request, env, ws)
+          : await handleBbHook(request, env, ws, url.searchParams.get("key"));
+        return json(r.body, r.status);
+      }
       const email = await getUser(request, env);
       const segs = url.pathname.replace(/^\/api\//, "").split("/").filter(Boolean);
       if (segs[0] === "me" && request.method === "GET") return handleMe(env, email);
@@ -479,5 +509,9 @@ export default {
       console.error(e);
       return json({ error: "Something went wrong on our side" }, 500);
     }
+  },
+  async scheduled(event, env, ctx) {
+    await ensureSchema(env);
+    await runCron(env);
   },
 };
