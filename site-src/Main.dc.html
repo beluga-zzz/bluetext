@@ -37,9 +37,11 @@ input[type=range]{accent-color:#0A84FF}
 .fl-mob{display:none}
 @media(max-width:980px){.fl-grid{grid-template-columns:minmax(0,1fr);gap:0}.fl-stage{display:none}.fl-step,.fl-step:last-child{min-height:0;padding-bottom:56px}.fl-step:last-child{padding-bottom:0}.fl-txt{opacity:1 !important}.fl-mob{display:block;margin-top:10px;border-radius:22px;background:#F4F6FA;padding:28px 20px}}
 @media(max-width:767px){.fl-step,.fl-step:last-child{flex-direction:column;gap:14px;padding-bottom:72px}.fl-step:last-child{padding-bottom:0}.fl-step::before{display:none}.fl-mob{padding:18px 12px;margin-top:14px}}
-.nav-links{display:flex;gap:24px;flex:1;flex-wrap:wrap;font-size:15px}
+.nav-links{display:flex;gap:24px;flex:1;flex-wrap:wrap;font-size:15px;order:2}
+.nav-login{order:3;padding:12px 0}
 .nav-burger{display:none;margin-left:auto;width:44px;height:44px;border:0;background:none;padding:0;cursor:pointer;place-items:center;color:#0B0B10}
-@media(max-width:767px){.nav-burger{display:grid}.nav-links{display:none;flex:0 0 100%;flex-direction:column;gap:0;font-size:17px;padding-bottom:8px}.nav-links.nav-open{display:flex}.nav-links a{padding:12px 0;border-top:1px solid #ECECF0}}
+.nav-burger{order:4}
+@media(max-width:767px){.nav-login{order:1;margin-left:auto;margin-right:8px}.nav-burger{display:grid;order:2;margin-left:0}.nav-links{order:3}.nav-links{display:none;flex:0 0 100%;flex-direction:column;gap:0;font-size:17px;padding-bottom:8px}.nav-links.nav-open{display:flex}.nav-links a{padding:12px 0;border-top:1px solid #ECECF0}}
 details summary{cursor:pointer;list-style:none}
 details summary::-webkit-details-marker{display:none}
 details[open] .bt-plus{transform:rotate(45deg)}
@@ -58,6 +60,7 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <a href="#why" style="color: #55576A">Why iMessage</a>
 <a href="#showrate" style="color: #55576A">Show rates</a>
 </div>
+<a href="https://app.b2blue.chat" class="nav-login" style="color: #0B0B10; font-size: 15px; font-weight: 600">Log in</a>
 </nav>
 </header>
 

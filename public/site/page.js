@@ -200,6 +200,7 @@ class Page extends Component {
 <a href="#why" style="color: #55576A">Why iMessage</a>
 <a href="#showrate" style="color: #55576A">Show rates</a>
 </div>
+<a href="https://app.b2blue.chat" class="nav-login" style="color: #0B0B10; font-size: 15px; font-weight: 600">Log in</a>
 </nav>
 </header>
 
@@ -208,7 +209,7 @@ class Page extends Component {
 <div style="max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px">
 <h1 style="margin: 0; font-size: clamp(38px, 6vw, 68px); line-height: 1.03; letter-spacing: -0.04em; font-weight: 800">3x show rates with automated iMessages</h1>
 <p style="margin: 0; font-size: 19px; line-height: 1.55; color: #55576A; max-width: 600px">Turn every booked demo into a real conversation. Personalized texts sent from real iPhones. Built for B2B sales teams.</p>
-<button type="button" onClick=${() => this.toggleCal()} aria-expanded=${Boolean(this.state.calOpen)} style="border: 0; cursor: pointer; font-family: inherit; background: ${v.accent}; color: #FFFFFF; padding: 16px 30px; border-radius: 14px; font-weight: 600; font-size: 17px">${this.state.calOpen ? "Close calendar" : "Book a demo"}</button>
+${this.state.calOpen ? html`<button type="button" onClick=${() => this.toggleCal()} aria-expanded="true" style="border: 0; background: none; padding: 4px; cursor: pointer; font-family: inherit; font-size: 14px; color: #6E6E73; text-decoration: underline; text-underline-offset: 3px">Close calendar</button>` : html`<button type="button" onClick=${() => this.toggleCal()} aria-expanded="false" style="border: 0; cursor: pointer; font-family: inherit; background: ${v.accent}; color: #FFFFFF; padding: 16px 30px; border-radius: 14px; font-weight: 600; font-size: 17px">Book a demo</button>`}
 <div style="width: min(1040px, calc(100vw - 32px)); overflow: hidden; transition: max-height .5s ease, opacity .4s ease; max-height: ${this.state.calOpen ? "1400px" : "0px"}; opacity: ${this.state.calOpen ? 1 : 0}"><div id="cal-hero" style="min-height: 560px; border-radius: 16px; overflow: auto"></div></div>
 <div style="display: flex; gap: 10px 28px; flex-wrap: wrap; justify-content: center; font-size: 14px; color: #6E6E73">
 <span>Real iPhone numbers</span><span>No A2P registration</span><span>Month to month</span>

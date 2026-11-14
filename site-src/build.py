@@ -55,8 +55,9 @@ out.append(dyn[pos:])
 tpl = "".join(out)
 hero_btn = re.search(r'<a href="#book" style="([^"]*)">Book a demo</a>', tpl)
 tpl = tpl.replace(hero_btn.group(0),
-    '<button type="button" onClick=${() => this.toggleCal()} aria-expanded=${Boolean(this.state.calOpen)} style="border: 0; cursor: pointer; font-family: inherit; '
-    + hero_btn.group(1) + '">${this.state.calOpen ? "Close calendar" : "Book a demo"}</button>\n'
+    '${this.state.calOpen'
+    ' ? html`<button type="button" onClick=${() => this.toggleCal()} aria-expanded="true" style="border: 0; background: none; padding: 4px; cursor: pointer; font-family: inherit; font-size: 14px; color: #6E6E73; text-decoration: underline; text-underline-offset: 3px">Close calendar</button>`'
+    ' : html`<button type="button" onClick=${() => this.toggleCal()} aria-expanded="false" style="border: 0; cursor: pointer; font-family: inherit; ' + hero_btn.group(1) + '">Book a demo</button>`}\n'
     '<div style="width: min(1040px, calc(100vw - 32px)); overflow: hidden; transition: max-height .5s ease, opacity .4s ease; '
     'max-height: ${this.state.calOpen ? "1400px" : "0px"}; opacity: ${this.state.calOpen ? 1 : 0}">'
     '<div id="cal-hero" style="min-height: 560px; border-radius: 16px; overflow: auto"></div></div>', 1)
