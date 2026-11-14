@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0A84FF">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&amp;family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <title>B2Blue</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/favicon.svg">
@@ -56,28 +59,31 @@
   </main>
 
   <div id="gate" class="gate" hidden>
-    <div class="gate-logo">B2Blue</div>
-    <p id="gateText"></p>
-    <form id="loginForm" class="auth-form" hidden>
-      <input id="loginEmail" type="email" placeholder="Email" autocomplete="username" required>
-      <input id="loginPw" type="password" placeholder="Password" autocomplete="current-password" required>
-      <button class="primary">Sign in</button>
-    </form>
-    <form id="setupForm" class="auth-form" hidden>
-      <p class="hint">Create your admin account. You only do this once.</p>
-      <input id="setupName" placeholder="Your name" autocomplete="name" required>
-      <input id="setupEmail" type="email" placeholder="Email" autocomplete="username" required>
-      <input id="setupPw" type="password" placeholder="New password (10+ characters)" autocomplete="new-password" minlength="10" required>
-      <input id="setupOld" type="password" placeholder="Current app password" autocomplete="off" required>
-      <button class="primary">Create admin account</button>
-    </form>
-    <form id="pwForm" class="auth-form" hidden>
-      <input id="pwCurrent" type="password" placeholder="Current or temporary password" autocomplete="current-password" required>
-      <input id="pwNew" type="password" placeholder="New password (10+ characters)" autocomplete="new-password" minlength="10" required>
-      <input id="pwConfirm" type="password" placeholder="Type it again" autocomplete="new-password" minlength="10" required>
-      <button class="primary">Save new password</button>
-      <button type="button" id="pwCancel" class="ghost" hidden>Cancel</button>
-    </form>
+    <div class="gate-card">
+      <div class="gate-logo">B2Blue</div>
+      <h1 id="gateTitle" class="gate-title"></h1>
+      <p id="gateText"></p>
+      <form id="loginForm" class="auth-form" hidden>
+        <label>Email<input id="loginEmail" type="email" placeholder="you@company.com" autocomplete="username" required></label>
+        <label>Password<input id="loginPw" type="password" autocomplete="current-password" required></label>
+        <button class="primary">Sign in</button>
+      </form>
+      <form id="setupForm" class="auth-form" hidden>
+        <label>Your name<input id="setupName" autocomplete="name" required></label>
+        <label>Email<input id="setupEmail" type="email" placeholder="you@company.com" autocomplete="username" required></label>
+        <label>New password<input id="setupPw" type="password" placeholder="At least 10 characters" autocomplete="new-password" minlength="10" required></label>
+        <label>Current app password<input id="setupOld" type="password" autocomplete="off" required></label>
+        <button class="primary">Create admin account</button>
+      </form>
+      <form id="pwForm" class="auth-form" hidden>
+        <label>Current or temporary password<input id="pwCurrent" type="password" autocomplete="current-password" required></label>
+        <label>New password<input id="pwNew" type="password" placeholder="At least 10 characters" autocomplete="new-password" minlength="10" required></label>
+        <label>New password again<input id="pwConfirm" type="password" autocomplete="new-password" minlength="10" required></label>
+        <button class="primary">Save new password</button>
+        <button type="button" id="pwCancel" class="ghost" hidden>Cancel</button>
+      </form>
+      <div class="gate-foot"><a href="https://b2blue.chat">&larr; Back to b2blue.chat</a></div>
+    </div>
   </div>
 
   <dialog id="newDialog" class="dialog">

@@ -122,9 +122,14 @@ async function boot() {
 }
 
 const AUTH_FORMS = ["loginForm", "setupForm", "pwForm"];
+const AUTH_TITLES = { loginForm: "Sign in", setupForm: "Create your admin account", pwForm: "Set a new password" };
+const AUTH_HINTS = { loginForm: "", setupForm: "You only do this once. After this, everyone signs in with their own email and password.", pwForm: "" };
 function showForm(id, msg = "", canCancel = false) {
   $("gate").hidden = false;
-  $("gateText").textContent = msg;
+  $("gateTitle").hidden = false;
+  $("gateTitle").textContent = AUTH_TITLES[id];
+  $("gateText").classList.remove("err");
+  $("gateText").textContent = msg || AUTH_HINTS[id];
   for (const f of AUTH_FORMS) { $(f).hidden = f !== id; if (f === id) $(f).reset(); }
   $("pwCancel").hidden = !canCancel;
   $(id).querySelector("input").focus();
@@ -134,7 +139,7 @@ function showLogin(msg = "") { showForm("loginForm", msg); }
 async function submitAuth(form, fn) {
   const btn = form.querySelector("button.primary");
   btn.disabled = true;
-  try { await fn(); } catch (err) { $("gateText").textContent = err.message; } finally { btn.disabled = false; }
+  try { await fn(); } catch (err) { $("gateText").textContent = err.message; $("gateText").classList.add("err"); } finally { btn.disabled = false; }
 }
 $("loginForm").addEventListener("submit", (e) => {
   e.preventDefault();
@@ -171,6 +176,8 @@ $("logoutBtn").addEventListener("click", async () => {
 
 function showGate(text, adminCta = false) {
   $("gate").hidden = false;
+  $("gateTitle").hidden = true;
+  $("gateText").classList.remove("err");
   for (const f of AUTH_FORMS) $(f).hidden = true;
   $("gateText").innerHTML = esc(text) + (adminCta ? `<br><br><button class="primary" id="gateAdmin">Open Admin</button>` : "");
   if (adminCta) {
