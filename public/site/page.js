@@ -223,7 +223,7 @@ class Page extends Component {
 <div style="max-width: 1180px; margin: 0 auto">
 <div style="display: flex; flex-direction: column; gap: 10px; max-width: 760px; margin-bottom: 64px">
 <div class="mono eyebrow rv">How it works</div>
-<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02">One booked demo, <em>from form fill to warm reply.</em></h2>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(30px, 3.8vw, 46px); line-height: 1.06">One booked demo, <em>from form fill to warm reply.</em></h2>
 </div>
 <div class="fl-grid">
 <div class="fl-steps">
@@ -235,7 +235,7 @@ ${(st.todo) ? html`<span>${st.n}</span>` : null}
 </div>
 <div class="fl-txt" style="display: flex; flex-direction: column; gap: 12px; padding-top: 8px; min-width: 0; flex: 1; opacity: ${st.textO}; transition: opacity .35s">
 <div class="mono" style="color: ${st.eyebrowFg}">${st.eyebrow}</div>
-<h3 class="ds" style="margin: 0; font-size: clamp(32px, 3.2vw, 42px); line-height: 1.04">${st.title}</h3>
+<h3 class="ds" style="margin: 0; font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1">${st.title}</h3>
 <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #55576A; max-width: 440px">${st.body}</p>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
 ${(st.tags).map((tg, $index) => html`<span style="font-size: 13px; font-weight: 600; background: #F2F3F6; color: #3A3C48; padding: 6px 12px; border-radius: 999px">${tg}</span>`)}
@@ -434,10 +434,10 @@ ${(v.reply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; max-
 
 <section style="border-bottom: 1px solid #ECECF0; padding: 0 24px">
 <div style="max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); border-left: 1px solid #ECECF0">
-<div class="tk rv rv1" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1; color: ${v.accent}">2–3x</div><div style="font-size: 15px; color: #55576A">higher reply rates than SMS, as reported by iMessage providers*</div></div>
-<div class="tk rv rv2" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1">Seconds</div><div style="font-size: 15px; color: #55576A">from form fill to first text, while your lead is still on the page.</div></div>
-<div class="tk rv rv3" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1">Read</div><div style="font-size: 15px; color: #55576A">receipts on every confirmation, so reps know who saw the reminder.</div></div>
-<div class="tk rv rv4" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1">0 days</div><div style="font-size: 15px; color: #55576A">of A2P 10DLC registration. Start the day your numbers are live.</div></div>
+<div class="tk rv rv1" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 40px; line-height: 1; color: ${v.accent}">2–3x</div><div style="font-size: 15px; color: #55576A">higher reply rates than SMS, as reported by iMessage providers*</div></div>
+<div class="tk rv rv2" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 40px; line-height: 1">Seconds</div><div style="font-size: 15px; color: #55576A">from form fill to first text, while your lead is still on the page.</div></div>
+<div class="tk rv rv3" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 40px; line-height: 1">Read</div><div style="font-size: 15px; color: #55576A">receipts on every confirmation, so reps know who saw the reminder.</div></div>
+<div class="tk rv rv4" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 40px; line-height: 1">0 days</div><div style="font-size: 15px; color: #55576A">of A2P 10DLC registration. Start the day your numbers are live.</div></div>
 </div>
 </section>
 
@@ -446,7 +446,7 @@ ${(v.reply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; max-
 <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
 <div style="display: flex; flex-direction: column; gap: 14px; max-width: 720px">
 <div class="mono eyebrow rv">Your funnel, on iMessage</div>
-<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02"><em>Email gets skimmed. Calls go to voicemail.</em> <span class="mark">Texts get read.</span></h2>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(30px, 3.8vw, 46px); line-height: 1.06"><em>Email gets skimmed. Calls go to voicemail.</em> <span class="mark">Texts get read.</span></h2>
 <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #55576A">B2Blue plugs into the four moments where B2B pipeline leaks, and puts a real conversation in the gap.</p>
 </div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
@@ -463,7 +463,7 @@ ${(v.reply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; max-
 <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
 <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
 <div class="mono eyebrow rv">Why iMessage</div>
-<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02">More replies, <em>more sales.</em></h2>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(30px, 3.8vw, 46px); line-height: 1.06">More replies, <em>more sales.</em></h2>
 <div role="group" aria-label="Compare channels" style="display: inline-flex; align-self: flex-start; background: #F2F2F7; border-radius: 14px; padding: 4px; gap: 4px">
 <button type="button" onClick=${v.pickSms} style=${v.smsBtn}>SMS</button>
 <button type="button" onClick=${v.pickIm} style=${v.imBtn}>iMessage</button>
@@ -504,7 +504,7 @@ ${(v.showReply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; 
 <section id="showrate" style="padding: 0 24px 96px">
 <div class="tk rv" style="max-width: 1180px; margin: 0 auto; background-color: #F6F7F9; color: #0B0B10; border-radius: 28px; padding: 56px 48px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center">
 <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
-<h2 class="ds" style="margin: 0; font-size: clamp(34px, 4vw, 50px); line-height: 1.04">What's a better show rate <em>worth?</em></h2>
+<h2 class="ds" style="margin: 0; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.08">What's a better show rate <em>worth?</em></h2>
 <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #55576A">Plug in your own numbers. Every no-show is a demo your team already paid to book.</p>
 <label for="bt-demos" style="font-size: 14px; color: #55576A; display: flex; justify-content: space-between; padding-top: 6px"><span>Demos booked per month</span><strong style="color: #0B0B10; font-size: 18px">${v.demos}</strong></label>
 <input id="bt-demos" type="range" min="10" max="400" step="10" value=${v.demos} onInput=${v.onDemos} style="width: 100%" />
@@ -515,9 +515,9 @@ ${(v.showReply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; 
 <p style="margin: 0; font-size: 12.5px; color: #6E6E73; line-height: 1.5">Starting values are examples, not benchmarks. Results depend on your funnel.</p>
 </div>
 <div style="flex: 1 1 420px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px">
-<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held today</div><div class="ds num" style="font-size: 52px; line-height: 1; color: #0B0B10">${v.heldNow}</div></div>
-<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held at your target</div><div class="ds num" style="font-size: 52px; line-height: 1; color: ${v.accent}">${v.heldNext}</div></div>
-<div style="grid-column: 1 / -1; background: ${v.accent}; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px; color: #FFFFFF"><div style="font-size: 13px; color: #FFFFFF">Extra demos held per year</div><div class="ds num" style="font-size: 64px; line-height: 1">+${v.extraYear}</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held today</div><div class="ds num" style="font-size: 38px; line-height: 1; color: #0B0B10">${v.heldNow}</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held at your target</div><div class="ds num" style="font-size: 38px; line-height: 1; color: ${v.accent}">${v.heldNext}</div></div>
+<div style="grid-column: 1 / -1; background: ${v.accent}; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px; color: #FFFFFF"><div style="font-size: 13px; color: #FFFFFF">Extra demos held per year</div><div class="ds num" style="font-size: 46px; line-height: 1">+${v.extraYear}</div></div>
 </div>
 </div>
 </section>
@@ -527,12 +527,12 @@ ${(v.showReply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; 
 <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
 <div style="display: flex; flex-direction: column; gap: 14px; max-width: 640px">
 <div class="mono eyebrow rv">How it works</div>
-<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02">Live this week. <em>Running on autopilot after that.</em></h2>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(30px, 3.8vw, 46px); line-height: 1.06">Live this week. <em>Running on autopilot after that.</em></h2>
 </div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
-<div class="card rv rv1" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: ${v.accent}; display: grid; place-items: center; font-size: 26px">1</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">We set up your reps</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Dedicated iPhone numbers for your SDRs and AEs, hosted and monitored for you.</p></div>
-<div class="card rv rv2" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: ${v.accent}; display: grid; place-items: center; font-size: 26px">2</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">Wire it into your funnel</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Demo request, meeting booked, no-show, deal stage change. Connect your CRM, Zapier, Make or our API.</p></div>
-<div class="card rv rv3" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: ${v.accent}; display: grid; place-items: center; font-size: 26px">3</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">Reps work replies anywhere</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Every conversation lands in one shared inbox. Tag by stage, filter by rep and reply from a laptop or phone.</p></div>
+<div class="card rv rv1" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: ${v.accent}; display: grid; place-items: center; font-size: 18px">1</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">We set up your reps</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Dedicated iPhone numbers for your SDRs and AEs, hosted and monitored for you.</p></div>
+<div class="card rv rv2" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: ${v.accent}; display: grid; place-items: center; font-size: 18px">2</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">Wire it into your funnel</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Demo request, meeting booked, no-show, deal stage change. Connect your CRM, Zapier, Make or our API.</p></div>
+<div class="card rv rv3" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: ${v.accent}; display: grid; place-items: center; font-size: 18px">3</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">Reps work replies anywhere</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Every conversation lands in one shared inbox. Tag by stage, filter by rep and reply from a laptop or phone.</p></div>
 </div>
 </div>
 </section>
@@ -540,7 +540,7 @@ ${(v.showReply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; 
 
 <section style="padding: 24px 24px 96px">
 <div style="max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
-<h2 class="ds rv" style="margin: 0 0 20px; font-size: clamp(36px, 4.4vw, 54px); line-height: 1.02; text-align: center">Questions, <em>answered.</em></h2>
+<h2 class="ds rv" style="margin: 0 0 20px; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.06; text-align: center">Questions, <em>answered.</em></h2>
 <details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Is this real iMessage?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Yes. Every message is sent from a real iPhone number through Apple's Messages app, so it arrives as a native iMessage with read receipts and typing indicators.</p></details>
 <details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Does it work with our CRM?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Triggers come from your CRM, forms or scheduling tool through Zapier, Make or our API. Common setups fire on a demo request, a booked meeting and a no-show.</p></details>
 <details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">What happens with Android users?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">They get a regular text from the same number, so no lead falls through the cracks.</p></details>

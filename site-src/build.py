@@ -82,7 +82,7 @@ js = (
 cta = f'''<section id="book" style="padding: 0 24px 96px">
 <div class="dark" style="max-width: 1180px; margin: 0 auto; border-radius: 28px; padding: 88px 20px 28px; display: flex; flex-direction: column; gap: 22px; align-items: center; text-align: center">
 <div class="mono eyebrow" style="color: #A1A1AA">Book a demo</div>
-<h2 class="ds" style="margin: 0; font-size: clamp(38px, 5.6vw, 72px); line-height: 1; max-width: 900px">Reach a lead within the hour <em>and you&#39;re 7x more likely to qualify them.</em></h2>
+<h2 class="ds" style="margin: 0; font-size: clamp(32px, 4.6vw, 54px); line-height: 1.04; max-width: 900px">Reach a lead within the hour <em>and you&#39;re 7x more likely to qualify them.</em></h2>
 <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #A1A1AA; max-width: 560px">B2Blue reaches them in seconds. Pick a time for a 15-minute intro call.</p>
 <div id="cal-inline" style="width: 100%; max-width: 1040px; min-height: 620px; overflow: auto; border-radius: 18px; background: #FFFFFF; margin-top: 12px; box-shadow: 0 30px 80px -30px rgba(10,132,255,.55)"></div>
 <p style="margin: 0; font-size: 14px"><a href="https://cal.com/{CAL_LINK}" target="_blank" rel="noopener" style="color: #8EC5FF">Calendar not loading? Book on Cal.com</a></p>
