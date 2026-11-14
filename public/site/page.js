@@ -64,7 +64,7 @@ class Page extends Component {
     const check = 'M5 12l5 5L20 7';
     const cross = 'M6 6l12 12M18 6L6 18';
     const imPoints = [
-      'Arrives as a native blue bubble from a real phone number',
+      'Arrives as a native iMessage from a real phone number',
       'Read receipts show which prospects saw the reminder',
       'Typing indicators and reactions feel like a conversation, not a campaign',
       'No A2P 10DLC registration before you start',
@@ -99,7 +99,7 @@ class Page extends Component {
       ['Meeting booked', 'A prospect books a demo.', 'B2Blue picks up the lead the second the form is submitted.', ['Booking webhooks', 'Lead forms']],
       ['Research', 'B2Blue does the homework.', 'B2Blue automatically researches the prospect and compiles relevant data.', ['LinkedIn', 'Company website']],
       ['Personalize', 'A message written for one person.', 'B2Blue writes a personalized message built from what it found.', ['AI drafting', '1:1, not a blast']],
-      ['Send via iMessage', 'Delivered as a blue bubble.', 'B2Blue automatically reaches out over iMessage, from a real iPhone number.', ['Real iPhone number', 'Read receipts']],
+      ['Send via iMessage', 'Delivered as a real iMessage.', 'B2Blue automatically reaches out over iMessage, from a real iPhone number.', ['Real iPhone number', 'Read receipts']],
       ['Warm reply', 'They write back.', 'The prospect replies, and the conversation lands in your team inbox.', ['Team inbox', 'Rep handoff']],
     ];
     const steps = stepDefs.map((d, i) => {
@@ -167,7 +167,6 @@ class Page extends Component {
       optOut: isIm ? '' : ' Reply STOP to opt out.',
       phoneStatus: isIm ? 'Read 3:13 PM' : '',
       showReply: isIm,
-      showFiltered: !isIm,
       demos,
       cur,
       next,
@@ -488,7 +487,6 @@ ${(v.points).map((pt, $index) => html`
 <div class="im-out" style="align-self: flex-end; max-width: 80%; background: ${v.bubble}; color: #FFFFFF; padding: 7px 12px; border-radius: 17px; transition: background .3s"><span style="position: relative; z-index: 1">Hi Marcus, quick reminder: our demo is today at 3:30. Still good to go?${v.optOut}</span></div>
 <div style="align-self: flex-end; font-size: 10.5px; font-weight: 600; color: #6E6E73; min-height: 14px">${v.phoneStatus}</div>
 ${(v.showReply) ? html`<div class="bt-pop im-in" style="align-self: flex-start; max-width: 80%; background: #E5E5EA; color: #000000; padding: 7px 12px; border-radius: 17px"><span style="position: relative; z-index: 1">Yep, see you then. Bringing our CFO.</span></div>` : null}
-${(v.showFiltered) ? html`<div class="bt-pop" style="align-self: center; margin-top: 10px; font-size: 12px; color: #C93400; background: #FFF1EB; padding: 7px 12px; border-radius: 10px">No read receipt. Did they see it?</div>` : null}
 </div>
 <div style="padding: 8px 12px 12px; display: flex; align-items: center; gap: 10px">
 <svg width="26" height="22" viewBox="0 0 26 22" fill="#8E8E93" aria-hidden="true"><path d="M9 2l-1.6 2.4H4a3 3 0 0 0-3 3V17a3 3 0 0 0 3 3h18a3 3 0 0 0 3-3V7.4a3 3 0 0 0-3-3h-3.4L17 2H9zm4 4.6a5.4 5.4 0 1 1 0 10.8 5.4 5.4 0 0 1 0-10.8zm0 2a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z" fill-rule="evenodd"></path></svg>
@@ -541,7 +539,7 @@ ${(v.showFiltered) ? html`<div class="bt-pop" style="align-self: center; margin-
 <section style="padding: 24px 24px 96px">
 <div style="max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
 <h2 style="margin: 0 0 16px; font-size: 36px; letter-spacing: -0.03em; font-weight: 800; text-align: center">Questions</h2>
-<details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Is this real iMessage?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Yes. Every message is sent from a real iPhone number through Apple's Messages app, so it arrives as a native blue bubble with read receipts and typing indicators.</p></details>
+<details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Is this real iMessage?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Yes. Every message is sent from a real iPhone number through Apple's Messages app, so it arrives as a native iMessage with read receipts and typing indicators.</p></details>
 <details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Does it work with our CRM?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Triggers come from your CRM, forms or scheduling tool through Zapier, Make or our API. Common setups fire on a demo request, a booked meeting and a no-show.</p></details>
 <details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">What happens with Android users?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">They get a regular text from the same number, so no lead falls through the cracks.</p></details>
 <details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Are there sending limits?<span class="bt-plus" style="font-size: 22px; color: ${v.accent}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Messages are unlimited. New conversations are paced per number, about 50 a day, to keep each number healthy. More reps, more numbers.</p></details>
