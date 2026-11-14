@@ -8,9 +8,16 @@ A branded iMessage inbox for client lines. Each workspace is one client: its own
 - `src/index.js` is the Worker. It handles `/api/*`, checks the app password, and talks to each workspace's BlueBubbles server. BlueBubbles passwords never reach the browser.
 - Tables are created automatically on the first request.
 
-## Login
+## Accounts
 
-The whole app sits behind one password. The default is set in `src/index.js` (`DEFAULT_PASSWORD`). To change it without touching code, add a secret named `APP_PASSWORD` in the Worker's Settings > Variables and Secrets. Changing it signs everyone out.
+Everyone signs in with their own email and password. There's no signup page: an admin adds people under Admin → Users, which shows a one-time temporary password to send them. They pick their own password the first time they sign in.
+
+- Admins see every workspace and can manage users and workspaces. Members only see the workspaces ticked for them.
+- Reset password gives the person a new temporary password and signs them out everywhere. Turn off signs them out and blocks sign-in.
+- 5 wrong passwords in a row lock an account for 15 minutes.
+- Passwords are hashed with PBKDF2-SHA256 (100,000 rounds, the most Workers allows) and a per-user salt. Code: `src/auth.js`.
+
+The very first admin is created on the setup screen, which only appears while there are no users. It asks for the old shared app password (`blue33!`, or the `APP_PASSWORD` secret if one is set).
 
 ## Local development
 
@@ -20,7 +27,7 @@ Create `.dev.vars` (git-ignored):
 DEV_EMAIL=you@example.com
 ```
 
-Then run `npm install` and `npm run dev`. `DEV_EMAIL` skips the password, and only on localhost.
+Then run `npm install` and `npm run dev`. Add `DEV_SKIP_LOGIN=1` as well to skip sign-in (localhost only).
 
 ## Notes
 

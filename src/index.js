@@ -3,6 +3,7 @@
 // b2blue.chat      -> the landing page (/public/site)
 // Old marmot.to addresses redirect; their /api/hooks/* URLs keep working.
 
+import { AUTH_SCHEMA, AuthError, currentUser, authState, setup, login, changePassword, me, adminUsers, clearCookie } from "./auth.js";
 import { AUTOMATION_SCHEMA, handleCalHook, handleBbHook, runCron, automationView, automationUpdate } from "./automation.js";
 
 const DEFAULT_TAGS = [
@@ -35,7 +36,7 @@ const SCHEMA = [
 let schemaReady = false;
 async function ensureSchema(env) {
   if (schemaReady) return;
-  await env.DB.batch([...SCHEMA, ...AUTOMATION_SCHEMA].map((s) => env.DB.prepare(s)));
+  await env.DB.batch([...SCHEMA, ...AUTOMATION_SCHEMA, ...AUTH_SCHEMA].map((s) => env.DB.prepare(s)));
   schemaReady = true;
 }
 
@@ -55,73 +56,17 @@ const json = (data, status = 200) =>
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
   });
 
-// ---------- Auth (single app password) ----------
-// One password gates the whole app. Override with an APP_PASSWORD secret.
-const DEFAULT_PASSWORD = "blue33!";
-const COOKIE = "b2_session";
-const SESSION_DAYS = 30;
+// ---------- Auth ----------
+// Accounts live in src/auth.js. The old shared password is only used once, to create the first admin.
+const LEGACY_PASSWORD = "blue33!";
+const legacyPassword = (env) => env.APP_PASSWORD || LEGACY_PASSWORD;
 
-function appPassword(env) {
-  return env.APP_PASSWORD || DEFAULT_PASSWORD;
-}
+const isAdmin = (user) => user.role === "admin";
 
-async function sessionToken(env) {
-  const key = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(appPassword(env)), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
-  );
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode("b2blue-session-v1"));
-  return btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/[+/=]/g, (c) => ({ "+": "-", "/": "_", "=": "" }[c]));
-}
-
-function safeEqual(a, b) {
-  if (a.length !== b.length) return false;
-  let r = 0;
-  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return r === 0;
-}
-
-function readCookie(request, name) {
-  const raw = request.headers.get("cookie") || "";
-  for (const part of raw.split(";")) {
-    const [k, ...v] = part.trim().split("=");
-    if (k === name) return v.join("=");
-  }
-  return null;
-}
-
-const USER = "team";
-
-async function getUser(request, env) {
-  const host = new URL(request.url).hostname;
-  if (env.DEV_EMAIL && (host === "localhost" || host === "127.0.0.1")) return USER;
-  const token = readCookie(request, COOKIE);
-  if (token && safeEqual(token, await sessionToken(env))) return USER;
-  throw new HttpError(401, "Not signed in");
-}
-
-function isAdmin() {
-  return true;
-}
-
-async function handleLogin(request, env) {
-  const body = await readBody(request);
-  const ok = typeof body.password === "string" && safeEqual(body.password, appPassword(env));
-  if (!ok) {
-    await new Promise((r) => setTimeout(r, 800)); // slow down guessing
-    throw new HttpError(401, "Wrong password");
-  }
-  const secure = new URL(request.url).protocol === "https:" ? "; Secure" : "";
-  return new Response(JSON.stringify({ ok: true }), {
-    headers: {
-      "content-type": "application/json",
-      "set-cookie": `${COOKIE}=${await sessionToken(env)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_DAYS * 86400}${secure}`,
-    },
-  });
-}
-
-function handleLogout() {
-  return new Response(JSON.stringify({ ok: true }), {
-    headers: { "content-type": "application/json", "set-cookie": `${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0` },
+function withCookie(data, cookie, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "set-cookie": cookie },
   });
 }
 
@@ -191,9 +136,10 @@ async function loadWorkspace(env, id) {
   return ws;
 }
 
-async function requireWorkspace(env, email, id) {
+async function requireWorkspace(env, user, id) {
   const ws = await loadWorkspace(env, id);
-  if (isAdmin(email, env)) return ws;
+  if (isAdmin(user)) return ws;
+  const email = user.email;
   const m = await env.DB.prepare("SELECT 1 FROM members WHERE workspace_id = ? AND email = ?")
     .bind(id, email).first();
   if (!m) throw new HttpError(403, "You don't have access to this workspace");
@@ -225,15 +171,16 @@ function isReaction(m) {
 
 // ---------- Handlers ----------
 
-async function handleMe(env, email) {
-  const admin = isAdmin(email, env);
+async function handleMe(env, user) {
+  const admin = isAdmin(user);
+  const email = user.email;
   const rows = admin
     ? await env.DB.prepare("SELECT id, name FROM workspaces ORDER BY name").all()
     : await env.DB.prepare(
         `SELECT w.id, w.name FROM workspaces w JOIN members m ON m.workspace_id = w.id
          WHERE m.email = ? ORDER BY w.name`
       ).bind(email).all();
-  return json({ email, isAdmin: admin, workspaces: rows.results });
+  return json({ ...me(user), isAdmin: admin, workspaces: rows.results });
 }
 
 async function handleAdmin(request, env, segs) {
@@ -330,8 +277,8 @@ async function handleAdmin(request, env, segs) {
   throw new HttpError(404, "Not found");
 }
 
-async function handleWorkspace(request, env, email, wsId, segs) {
-  const ws = await requireWorkspace(env, email, wsId);
+async function handleWorkspace(request, env, user, wsId, segs) {
+  const ws = await requireWorkspace(env, user, wsId);
   const method = request.method;
   const url = new URL(request.url);
   const [a, b, c] = segs;
@@ -502,8 +449,16 @@ export default {
     if (!isApi) return env.ASSETS.fetch(request);
     try {
       await ensureSchema(env);
-      if (url.pathname === "/api/login" && request.method === "POST") return await handleLogin(request, env);
-      if (url.pathname === "/api/logout" && request.method === "POST") return handleLogout();
+      if (url.pathname === "/api/auth-state" && request.method === "GET") return json(await authState(env));
+      if (url.pathname === "/api/setup" && request.method === "POST") {
+        const r = await setup(request, env, await readBody(request), legacyPassword(env));
+        return withCookie({ ok: true, user: r.user }, r.cookie, 201);
+      }
+      if (url.pathname === "/api/login" && request.method === "POST") {
+        const r = await login(request, env, await readBody(request));
+        return withCookie({ ok: true, user: r.user }, r.cookie);
+      }
+      if (url.pathname === "/api/logout" && request.method === "POST") return withCookie({ ok: true }, clearCookie());
       // Webhooks from Cal.com and BlueBubbles authenticate with their own secrets, not the app password.
       const hook = /^\/api\/hooks\/(cal|bb)\/([\w-]+)$/.exec(url.pathname);
       if (hook && request.method === "POST") {
@@ -513,17 +468,24 @@ export default {
           : await handleBbHook(request, env, ws, url.searchParams.get("key"));
         return json(r.body, r.status);
       }
-      const email = await getUser(request, env);
+      const user = await currentUser(request, env);
       const segs = url.pathname.replace(/^\/api\//, "").split("/").filter(Boolean);
-      if (segs[0] === "me" && request.method === "GET") return handleMe(env, email);
+      if (segs[0] === "me" && request.method === "GET") return handleMe(env, user);
+      if (segs[0] === "password" && request.method === "POST") {
+        const r = await changePassword(request, env, user, await readBody(request));
+        return withCookie({ ok: true }, r.cookie);
+      }
+      // A temporary password must be changed before anything else.
+      if (user.must_change) throw new HttpError(403, "Set a new password first");
       if (segs[0] === "admin") {
-        if (!isAdmin(email, env)) throw new HttpError(403, "Admins only");
+        if (!isAdmin(user)) throw new HttpError(403, "Admins only");
+        if (segs[1] === "users") return json(await adminUsers(request, env, user, segs.slice(2)));
         return await handleAdmin(request, env, segs.slice(1));
       }
-      if (segs[0] === "w" && segs[1]) return await handleWorkspace(request, env, email, segs[1], segs.slice(2));
+      if (segs[0] === "w" && segs[1]) return await handleWorkspace(request, env, user, segs[1], segs.slice(2));
       throw new HttpError(404, "Not found");
     } catch (e) {
-      if (e instanceof HttpError) return json({ error: e.message }, e.status);
+      if (e instanceof HttpError || e instanceof AuthError) return json({ error: e.message }, e.status);
       console.error(e);
       return json({ error: "Something went wrong on our side" }, 500);
     }

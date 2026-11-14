@@ -16,6 +16,7 @@
     <div class="topbar-right">
       <button id="tagsBtn" class="ghost" hidden>Tags</button>
       <button id="adminBtn" class="ghost" hidden>Admin</button>
+      <button id="accountBtn" class="ghost" hidden>Password</button>
       <button id="logoutBtn" class="ghost" hidden>Sign out</button>
     </div>
   </header>
@@ -57,9 +58,25 @@
   <div id="gate" class="gate" hidden>
     <div class="gate-logo">B2Blue</div>
     <p id="gateText"></p>
-    <form id="loginForm" class="login" hidden>
+    <form id="loginForm" class="auth-form" hidden>
+      <input id="loginEmail" type="email" placeholder="Email" autocomplete="username" required>
       <input id="loginPw" type="password" placeholder="Password" autocomplete="current-password" required>
       <button class="primary">Sign in</button>
+    </form>
+    <form id="setupForm" class="auth-form" hidden>
+      <p class="hint">Create your admin account. You only do this once.</p>
+      <input id="setupName" placeholder="Your name" autocomplete="name" required>
+      <input id="setupEmail" type="email" placeholder="Email" autocomplete="username" required>
+      <input id="setupPw" type="password" placeholder="New password (10+ characters)" autocomplete="new-password" minlength="10" required>
+      <input id="setupOld" type="password" placeholder="Current app password" autocomplete="off" required>
+      <button class="primary">Create admin account</button>
+    </form>
+    <form id="pwForm" class="auth-form" hidden>
+      <input id="pwCurrent" type="password" placeholder="Current or temporary password" autocomplete="current-password" required>
+      <input id="pwNew" type="password" placeholder="New password (10+ characters)" autocomplete="new-password" minlength="10" required>
+      <input id="pwConfirm" type="password" placeholder="Type it again" autocomplete="new-password" minlength="10" required>
+      <button class="primary">Save new password</button>
+      <button type="button" id="pwCancel" class="ghost" hidden>Cancel</button>
     </form>
   </div>
 
@@ -90,7 +107,22 @@
 
   <dialog id="adminDialog" class="dialog wide">
     <div>
-      <h2>Workspaces</h2>
+      <h2>Users</h2>
+      <p class="hint">Only people you add here can sign in. Admins see every workspace; members only see the ones you tick.</p>
+      <div id="tempPwBox" class="temp-pw" hidden></div>
+      <div id="userList" class="ws-admin-list"></div>
+      <h3>Add a user</h3>
+      <form id="addUserForm" class="stack">
+        <div class="row">
+          <input id="userName" placeholder="Name" required>
+          <input id="userEmail" type="email" placeholder="name@company.com" required>
+          <select id="userRole" style="width:auto"><option value="member">Member</option><option value="admin">Admin</option></select>
+        </div>
+        <div id="userWsPick" class="ws-pick"></div>
+        <button class="primary">Add user</button>
+      </form>
+
+      <h2 style="margin-top:28px">Workspaces</h2>
       <p class="hint">Each workspace is one client line: its own BlueBubbles server and its own team.</p>
       <div id="wsAdminList" class="ws-admin-list"></div>
       <h3>Add a workspace</h3>

@@ -93,11 +93,16 @@ async function boot() {
   try {
     state.me = await api("me");
   } catch (e) {
-    if (e.status === 401) return showLogin();
+    if (e.status === 401) {
+      const st = await api("auth-state").catch(() => ({}));
+      return st.needsSetup ? showForm("setupForm") : showForm("loginForm");
+    }
     return showGate(e.message);
   }
-  $("gate").hidden = true;
   $("logoutBtn").hidden = false;
+  if (state.me.mustChange) return showForm("pwForm", "Pick your own password to finish signing in.");
+  $("gate").hidden = true;
+  $("accountBtn").hidden = false;
   $("adminBtn").hidden = !state.me.isAdmin;
   const list = state.me.workspaces;
   if (!list.length) {
@@ -116,28 +121,48 @@ async function boot() {
   startPolling();
 }
 
-function showLogin(msg = "") {
+const AUTH_FORMS = ["loginForm", "setupForm", "pwForm"];
+function showForm(id, msg = "", canCancel = false) {
   $("gate").hidden = false;
   $("gateText").textContent = msg;
-  $("loginForm").hidden = false;
-  $("loginPw").value = "";
-  $("loginPw").focus();
+  for (const f of AUTH_FORMS) { $(f).hidden = f !== id; if (f === id) $(f).reset(); }
+  $("pwCancel").hidden = !canCancel;
+  $(id).querySelector("input").focus();
 }
+function showLogin(msg = "") { showForm("loginForm", msg); }
 
-$("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const btn = e.target.querySelector("button");
+async function submitAuth(form, fn) {
+  const btn = form.querySelector("button.primary");
   btn.disabled = true;
-  try {
-    await api("login", { method: "POST", body: { password: $("loginPw").value } });
-    $("loginForm").hidden = true;
+  try { await fn(); } catch (err) { $("gateText").textContent = err.message; } finally { btn.disabled = false; }
+}
+$("loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  submitAuth(e.target, async () => {
+    await api("login", { method: "POST", body: { email: $("loginEmail").value, password: $("loginPw").value } });
     await boot();
-  } catch (err) {
-    showLogin(err.message);
-  } finally {
-    btn.disabled = false;
-  }
+  });
 });
+$("setupForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  submitAuth(e.target, async () => {
+    await api("setup", { method: "POST", body: {
+      name: $("setupName").value, email: $("setupEmail").value, password: $("setupPw").value, setupPassword: $("setupOld").value,
+    } });
+    await boot();
+  });
+});
+$("pwForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  submitAuth(e.target, async () => {
+    if ($("pwNew").value !== $("pwConfirm").value) throw new Error("The two new passwords don't match");
+    await api("password", { method: "POST", body: { current: $("pwCurrent").value, password: $("pwNew").value } });
+    toast("Password saved");
+    if (state.me?.mustChange || !state.wsId) await boot(); else $("gate").hidden = true;
+  });
+});
+$("pwCancel").addEventListener("click", () => { $("gate").hidden = true; });
+$("accountBtn").addEventListener("click", () => showForm("pwForm", "Change your password. Other devices will be signed out.", true));
 
 $("logoutBtn").addEventListener("click", async () => {
   try { await api("logout", { method: "POST" }); } catch {}
@@ -146,7 +171,7 @@ $("logoutBtn").addEventListener("click", async () => {
 
 function showGate(text, adminCta = false) {
   $("gate").hidden = false;
-  $("loginForm").hidden = true;
+  for (const f of AUTH_FORMS) $(f).hidden = true;
   $("gateText").innerHTML = esc(text) + (adminCta ? `<br><br><button class="primary" id="gateAdmin">Open Admin</button>` : "");
   if (adminCta) {
     $("adminBtn").hidden = false;
@@ -391,9 +416,99 @@ async function afterTagChange() {
 
 // ---------- admin ----------
 async function openAdmin() {
+  $("tempPwBox").hidden = true;
   $("adminDialog").showModal();
-  await renderAdmin();
+  await Promise.all([renderAdmin(), renderUsers()]);
 }
+
+let wsCache = [];
+function wsPicker(selected = []) {
+  if (!wsCache.length) return `<span class="hint">No workspaces yet.</span>`;
+  return wsCache.map((w) => `<label><input type="checkbox" value="${esc(w.id)}" ${selected.includes(w.id) ? "checked" : ""}> ${esc(w.name)}</label>`).join("");
+}
+const picked = (el) => [...el.querySelectorAll("input[type=checkbox]:checked")].map((c) => c.value);
+
+function showTempPassword(email, pw) {
+  const box = $("tempPwBox");
+  box.hidden = false;
+  box.innerHTML = `<div>Temporary password for <strong>${esc(email)}</strong>. Send it to them privately. They'll pick their own the first time they sign in. It won't be shown again.</div>
+    <div class="row"><code>${esc(pw)}</code><button type="button" class="ghost small" id="copyTemp">Copy</button></div>
+    <div class="hint" style="margin:0">Sign in at ${esc(location.origin)}</div>`;
+  $("copyTemp").onclick = async () => { try { await navigator.clipboard.writeText(pw); toast("Copied"); } catch {} };
+  box.scrollIntoView({ block: "nearest" });
+}
+
+async function renderUsers() {
+  const el = $("userList");
+  try {
+    const [users, ws] = await Promise.all([api("admin/users"), api("admin/workspaces")]);
+    wsCache = ws.map((w) => ({ id: w.id, name: w.name }));
+    $("userWsPick").innerHTML = wsPicker();
+    el.innerHTML = users.map((u) => `
+      <div class="ws-card" data-uid="${esc(u.id)}">
+        <div class="ws-card-head">
+          <strong>${esc(u.name)}${u.you ? " (you)" : ""}</strong>
+          <span class="badge ${u.role === "admin" ? "admin" : ""}">${u.role === "admin" ? "Admin" : "Member"}</span>
+          ${u.disabled ? `<span class="badge off">Off</span>` : ""}${u.locked ? `<span class="badge off">Locked</span>` : ""}
+          ${u.mustChange && !u.disabled ? `<span class="badge">Hasn't set password</span>` : ""}
+        </div>
+        <div class="ws-url">${esc(u.email)} · ${u.lastLogin ? "last sign-in " + esc(new Date(u.lastLogin).toLocaleDateString()) : "never signed in"}</div>
+        ${u.role === "admin" ? `<div class="hint" style="margin:0">Sees every workspace.</div>` :
+          `<div class="ws-pick" data-access>${wsPicker(u.workspaces.map((w) => w.id))}</div>`}
+        <div class="user-actions">
+          ${u.role === "admin" ? "" : `<button class="ghost small" data-save>Save access</button>`}
+          ${u.you ? "" : `<button class="ghost small" data-role>${u.role === "admin" ? "Make member" : "Make admin"}</button>`}
+          <button class="ghost small" data-reset>Reset password</button>
+          ${u.you ? "" : `<button class="ghost small" data-toggle>${u.disabled ? "Turn on" : "Turn off"}</button>`}
+          ${u.you ? "" : `<button class="ghost small danger" data-deluser>Delete</button>`}
+        </div>
+      </div>`).join("");
+  } catch (e) {
+    el.innerHTML = `<p class="hint">${esc(e.message)}</p>`;
+  }
+}
+
+$("addUserForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const r = await api("admin/users", { method: "POST", body: {
+      name: $("userName").value, email: $("userEmail").value, role: $("userRole").value, workspaces: picked($("userWsPick")),
+    } });
+    $("addUserForm").reset();
+    await renderUsers(); await renderAdmin();
+    showTempPassword(r.email, r.tempPassword);
+  } catch (err) { toast(err.message); }
+});
+
+$("userList").addEventListener("click", async (e) => {
+  const card = e.target.closest("[data-uid]");
+  if (!card) return;
+  const id = card.dataset.uid;
+  const name = card.querySelector("strong").textContent;
+  try {
+    if (e.target.closest("[data-save]")) {
+      await api(`admin/users/${id}`, { method: "PATCH", body: { workspaces: picked(card.querySelector("[data-access]")) } });
+      toast("Access saved"); await renderAdmin();
+    } else if (e.target.closest("[data-role]")) {
+      const toAdmin = e.target.closest("[data-role]").textContent.includes("admin");
+      await api(`admin/users/${id}`, { method: "PATCH", body: { role: toAdmin ? "admin" : "member" } });
+      await renderUsers();
+    } else if (e.target.closest("[data-reset]")) {
+      if (!confirm(`Reset ${name}'s password? They'll be signed out and get a new temporary password.`)) return;
+      const r = await api(`admin/users/${id}/reset`, { method: "POST" });
+      if (r.signedOut) { alert(`Your new temporary password: ${r.tempPassword}`); return location.reload(); }
+      await renderUsers(); showTempPassword(r.email, r.tempPassword);
+    } else if (e.target.closest("[data-toggle]")) {
+      const off = e.target.closest("[data-toggle]").textContent === "Turn off";
+      await api(`admin/users/${id}`, { method: "PATCH", body: { disabled: off } });
+      toast(off ? `${name} is signed out and can't sign in` : `${name} can sign in again`); await renderUsers();
+    } else if (e.target.closest("[data-deluser]")) {
+      if (!confirm(`Delete ${name}? They lose access right away. Messages and contacts aren't affected.`)) return;
+      await api(`admin/users/${id}`, { method: "DELETE" });
+      await renderUsers(); await renderAdmin();
+    }
+  } catch (err) { toast(err.message); }
+});
 
 async function renderAdmin() {
   const el = $("wsAdminList");
@@ -410,11 +525,7 @@ async function renderAdmin() {
         <div class="ws-url">${esc(w.bb_url)}</div>
         <div class="members">${w.members.map((m) =>
           `<span class="chip">${esc(m)} <button class="ghost small danger" data-rm="${esc(m)}" aria-label="Remove">×</button></span>`).join("") ||
-          `<span class="hint">No team members yet. Admins always have access.</span>`}</div>
-        <form class="row" data-addmember>
-          <input type="email" placeholder="client@company.com" required>
-          <button class="primary small">Add member</button>
-        </form>
+          `<span class="hint">No members yet. Give people access under Users. Admins always have access.</span>`}</div>
       </div>`).join("") || `<p class="hint">No workspaces yet.</p>`;
   } catch (e) {
     el.innerHTML = `<p class="hint">${esc(e.message)}</p>`;
@@ -557,7 +668,7 @@ $("addWsForm").addEventListener("submit", async (e) => {
       body: { name: $("wsName").value, bb_url: $("wsUrl").value, bb_password: $("wsPw").value },
     });
     $("addWsForm").reset();
-    await renderAdmin();
+    await Promise.all([renderAdmin(), renderUsers()]);
     await reloadMe();
     if (!state.wsId) { await switchWorkspace(r.id); startPolling(); $("wsSelect").value = r.id; }
     toast("Workspace added");
@@ -581,21 +692,10 @@ $("wsAdminList").addEventListener("click", async (e) => {
     } else if (e.target.closest("[data-rm]")) {
       const email = e.target.closest("[data-rm]").dataset.rm;
       await api(`admin/workspaces/${id}/members/${encodeURIComponent(email)}`, { method: "DELETE" });
-      await renderAdmin();
+      await Promise.all([renderAdmin(), renderUsers()]);
     }
   } catch (err) { toast(err.message); }
 });
-$("wsAdminList").addEventListener("submit", async (e) => {
-  const form = e.target.closest("[data-addmember]");
-  if (!form) return;
-  e.preventDefault();
-  const id = form.closest("[data-id]").dataset.id;
-  try {
-    await api(`admin/workspaces/${id}/members`, { method: "POST", body: { email: form.querySelector("input").value } });
-    await renderAdmin();
-  } catch (err) { toast(err.message); }
-});
-
 // ---------- automation ----------
 let autoWs = null;
 const TPL_KEYS = ["tpl_confirm", "tpl_reschedule", "tpl_24h", "tpl_1h"];
