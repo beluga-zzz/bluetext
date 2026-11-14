@@ -9,7 +9,7 @@
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#FFFFFF}
 a{color:#0A84FF;text-decoration:none}a:hover{color:#0066CC}
@@ -42,17 +42,74 @@ input[type=range]{accent-color:#0A84FF}
 .nav-burger{display:none;margin-left:auto;width:44px;height:44px;border:0;background:none;padding:0;cursor:pointer;place-items:center;color:#0B0B10}
 .nav-burger{order:4}
 @media(max-width:767px){.nav-login{order:1;margin-left:auto;margin-right:8px}.nav-burger{display:grid;order:2;margin-left:0}.nav-links{order:3}.nav-links{display:none;flex:0 0 100%;flex-direction:column;gap:0;font-size:17px;padding-bottom:8px}.nav-links.nav-open{display:flex}.nav-links a{padding:12px 0;border-top:1px solid #ECECF0}}
+/* ---- type ---- */
+.ds{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-0.01em}
+.ds em,.dim{font-style:normal;color:#A1A1AA}
+.mono{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#6E6E73}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:2px;background:#0A84FF}
+.num{font-variant-numeric:tabular-nums}
+/* ---- entrance (hero) ---- */
+@keyframes b2-enter{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.en{animation:b2-enter .8s cubic-bezier(.22,1,.36,1) both}
+.en1{animation-delay:.08s}.en2{animation-delay:.16s}.en3{animation-delay:.24s}.en4{animation-delay:.36s}
+@keyframes b2-shimmer{from{background-position:100% 0}to{background-position:0 0}}
+.shim{background:linear-gradient(100deg,#0B0B10 0%,#0B0B10 42%,#0A84FF 50%,#5AB0FF 53%,#0B0B10 62%,#0B0B10 100%);background-size:300% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent;animation:b2-shimmer 1.8s cubic-bezier(.45,0,.25,1) .7s both}
+@keyframes b2-pulse{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+.pulse{width:7px;height:7px;border-radius:50%;background:#0A84FF;animation:b2-pulse 2.2s ease-in-out infinite}
+/* ---- hero backdrop: hairline grid + drifting glow ---- */
+.hero{position:relative;overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#EEF0F4 1px,transparent 1px),linear-gradient(90deg,#EEF0F4 1px,transparent 1px);background-size:56px 56px;background-position:center -1px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%)}
+@keyframes b2-drift{0%,100%{transform:translate(-50%,0) scale(1)}50%{transform:translate(-46%,24px) scale(1.08)}}
+.hero::after{content:"";position:absolute;z-index:-1;left:50%;top:-180px;width:min(900px,120vw);height:520px;border-radius:50%;background:radial-gradient(closest-side,rgba(10,132,255,.16),rgba(10,132,255,.05) 55%,transparent);filter:blur(10px);animation:b2-drift 14s ease-in-out infinite}
+/* ---- corner ticks on framed boxes ---- */
+.tk{--tk:#C7C7CC;background:linear-gradient(var(--tk),var(--tk)) top left/10px 1px no-repeat,linear-gradient(var(--tk),var(--tk)) top left/1px 10px no-repeat,linear-gradient(var(--tk),var(--tk)) top right/10px 1px no-repeat,linear-gradient(var(--tk),var(--tk)) top right/1px 10px no-repeat,linear-gradient(var(--tk),var(--tk)) bottom left/10px 1px no-repeat,linear-gradient(var(--tk),var(--tk)) bottom left/1px 10px no-repeat,linear-gradient(var(--tk),var(--tk)) bottom right/10px 1px no-repeat,linear-gradient(var(--tk),var(--tk)) bottom right/1px 10px no-repeat}
+/* ---- cards + buttons ---- */
+.card{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .35s;background:#FFFFFF}
+.card:hover{transform:translateY(-3px);border-color:#D9DCE3 !important;box-shadow:0 18px 40px -18px rgba(16,24,40,.18)}
+.btn{display:inline-flex;align-items:center;gap:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 1px 2px rgba(10,60,140,.25),0 8px 22px -8px rgba(10,132,255,.55);transition:transform .2s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-1px);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 2px 4px rgba(10,60,140,.25),0 14px 28px -10px rgba(10,132,255,.7)}
+.btn .arr{transition:transform .25s cubic-bezier(.22,1,.36,1)}.btn:hover .arr{transform:translateX(3px)}
+.nav-links a,.nav-login{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .3s cubic-bezier(.22,1,.36,1),color .2s}
+.nav-links a:hover,.nav-login:hover{background-size:100% 1px;color:#0B0B10 !important}
+.ticks{display:flex;gap:10px 22px;flex-wrap:wrap;justify-content:center}
+.ticks span{display:inline-flex;align-items:center;gap:7px}
+.ticks span::before{content:"";width:14px;height:14px;border-radius:50%;background:#E8F1FF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A84FF' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/10px no-repeat}
+/* ---- marker highlight that draws in ---- */
+.mark{background:linear-gradient(transparent 62%,rgba(10,132,255,.22) 62%) 0 0/0% 100% no-repeat;transition:background-size 1s cubic-bezier(.22,1,.36,1) .3s}
+/* ---- scroll reveal (CSS only; browsers without scroll timelines just show everything) ---- */
+@keyframes b2-rise{from{opacity:0;transform:translateY(22px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+@keyframes b2-mark{to{background-size:100% 100%}}
+@supports (animation-timeline: view()){
+.rv{animation:b2-rise linear both;animation-timeline:view();animation-range:entry 5% cover 28%}
+.rv2{animation-range:entry 12% cover 34%}.rv3{animation-range:entry 18% cover 40%}.rv4{animation-range:entry 24% cover 46%}
+.mark{transition:none;animation:b2-mark linear both;animation-timeline:view();animation-range:entry 40% cover 45%}
+}
+@supports not (animation-timeline: view()){.mark{background-size:100% 100%}}
+/* ---- sticky glass nav ---- */
+.topnav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.78);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px)}
+/* ---- FAQ ---- */
+@keyframes b2-faq{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+details[open] > p{animation:b2-faq .35s cubic-bezier(.22,1,.36,1)}
+details{transition:border-color .25s,background .25s}details:hover{border-color:#D9DCE3 !important}
+details[open]{background:#FAFAFB}
+/* ---- dark CTA ---- */
+.dark{position:relative;overflow:hidden;isolation:isolate;background:#0B0B10;color:#FFFFFF}
+.dark::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 0%,#000,transparent 80%);mask-image:radial-gradient(ellipse 80% 70% at 50% 0%,#000,transparent 80%)}
+.dark::after{content:"";position:absolute;z-index:-1;left:50%;top:-260px;width:820px;height:520px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(10,132,255,.45),transparent);filter:blur(20px)}
+.dark .ds em{color:#6B7280}
+@media (prefers-reduced-motion: reduce){.en,.shim,.pulse,.hero::after,.rv,.mark{animation:none !important}.shim{color:#0B0B10;background:none}.mark{background-size:100% 100%}.card,.btn{transition:none}}
 details summary{cursor:pointer;list-style:none}
 details summary::-webkit-details-marker{display:none}
 details[open] .bt-plus{transform:rotate(45deg)}
 </style>
 </helmet>
-<div style="font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #0B0B10; background: #FFFFFF; width: 100%; -webkit-font-smoothing: antialiased">
+<div style="font-family: Geist, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #0B0B10; background: #FFFFFF; width: 100%; -webkit-font-smoothing: antialiased">
 
 <!-- NAV -->
-<header style="background: #FFFFFF; border-bottom: 1px solid #ECECF0">
+<header class="topnav" style="border-bottom: 1px solid #ECECF0">
 <nav style="max-width: 1180px; margin: 0 auto; padding: 10px 24px; min-height: 44px; display: flex; align-items: center; gap: 0 28px; flex-wrap: wrap">
-<a href="#top" style="color: #000000; font-size: 15px; font-weight: 600">B2Blue</a>
+<a href="#top" style="color: #000000; font-size: 16px; font-weight: 600; letter-spacing: -0.02em">B2Blue</a>
 <button type="button" class="nav-burger" aria-label="Menu" aria-expanded="{{navOpen}}" onClick="{{toggleNav}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
 <div class="nav-links {{navCls}}" onClick="{{closeNav}}">
 <a href="#flow" style="color: #55576A">How it works</a>
@@ -65,12 +122,13 @@ details[open] .bt-plus{transform:rotate(45deg)}
 </header>
 
 <!-- HERO -->
-<section id="top" style="background: #FFFFFF; color: #0B0B10; padding: 96px 24px 88px">
-<div style="max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px">
-<h1 style="margin: 0; font-size: clamp(38px, 6vw, 68px); line-height: 1.03; letter-spacing: -0.04em; font-weight: 800">3x show rates with automated iMessages</h1>
-<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #55576A; max-width: 600px">Turn every booked demo into a real conversation. Personalized texts sent from real iPhones. Built for B2B sales teams.</p>
-<a href="https://cal.com/jacob-loving-twobz4/creativerize" target="_blank" rel="noopener" style="background: {{accent}}; color: #FFFFFF; padding: 16px 30px; border-radius: 14px; font-weight: 600; font-size: 17px">Book a demo</a>
-<div style="display: flex; gap: 10px 28px; flex-wrap: wrap; justify-content: center; font-size: 14px; color: #6E6E73">
+<section id="top" class="hero" style="color: #0B0B10; padding: 104px 24px 96px">
+<div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px">
+<div class="en mono" style="display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px; border: 1px solid #E5E5EA; border-radius: 999px; background: rgba(255,255,255,.7); color: #55576A"><span class="pulse"></span>iMessage automation for B2B sales</div>
+<h1 class="ds en en1" style="margin: 0; font-size: clamp(48px, 8vw, 96px); line-height: 0.98">3x show rates with <span class="shim">automated iMessages</span></h1>
+<p class="en en2" style="margin: 0; font-size: 19px; line-height: 1.55; color: #55576A; max-width: 600px">Turn every booked demo into a real conversation. Personalized texts sent from real iPhones. Built for B2B sales teams.</p>
+<a href="https://cal.com/jacob-loving-twobz4/creativerize" target="_blank" rel="noopener" class="btn en en3" style="background: {{accent}}; color: #FFFFFF; padding: 15px 26px; border-radius: 12px; font-weight: 500; font-size: 16px">Book a demo</a>
+<div class="ticks en en4" style="font-size: 14px; color: #6E6E73">
 <span>Real iPhone numbers</span><span>No A2P registration</span><span>Month to month</span>
 </div>
 </div>
@@ -80,8 +138,8 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <section id="flow" ref="{{flowRef}}" style="padding: 88px 24px 40px; border-top: 1px solid #ECECF0; border-bottom: 1px solid #ECECF0">
 <div style="max-width: 1180px; margin: 0 auto">
 <div style="display: flex; flex-direction: column; gap: 10px; max-width: 760px; margin-bottom: 64px">
-<div style="font-size: 14px; font-weight: 700; color: {{accent}}; letter-spacing: .08em; text-transform: uppercase">How it works</div>
-<h2 style="margin: 0; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 800">One booked demo, from form fill to warm reply.</h2>
+<div class="mono eyebrow rv">How it works</div>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02">One booked demo, <em>from form fill to warm reply.</em></h2>
 </div>
 <div class="fl-grid">
 <div class="fl-steps">
@@ -92,8 +150,8 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <sc-if value="{{st.todo}}" hint-placeholder-val="{{true}}"><span>{{st.n}}</span></sc-if>
 </div>
 <div class="fl-txt" style="display: flex; flex-direction: column; gap: 12px; padding-top: 8px; min-width: 0; flex: 1; opacity: {{st.textO}}; transition: opacity .35s">
-<div style="font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: {{st.eyebrowFg}}">{{st.eyebrow}}</div>
-<h3 style="margin: 0; font-size: clamp(26px, 2.6vw, 34px); line-height: 1.12; letter-spacing: -0.025em; font-weight: 800">{{st.title}}</h3>
+<div class="mono" style="color: {{st.eyebrowFg}}">{{st.eyebrow}}</div>
+<h3 class="ds" style="margin: 0; font-size: clamp(32px, 3.2vw, 42px); line-height: 1.04">{{st.title}}</h3>
 <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #55576A; max-width: 440px">{{st.body}}</p>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
 <sc-for list="{{st.tags}}" as="tg" hint-placeholder-count="2"><span style="font-size: 13px; font-weight: 600; background: #F2F3F6; color: #3A3C48; padding: 6px 12px; border-radius: 999px">{{tg}}</span></sc-for>
@@ -290,12 +348,12 @@ details[open] .bt-plus{transform:rotate(45deg)}
 </section>
 
 <!-- STAT BAND -->
-<section style="border-bottom: 1px solid #ECECF0; padding: 44px 24px">
-<div style="max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px">
-<div style="display: flex; flex-direction: column; gap: 6px"><div style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; color: {{accent}}">2–3x</div><div style="font-size: 15px; color: #55576A">higher reply rates than SMS, as reported by iMessage providers*</div></div>
-<div style="display: flex; flex-direction: column; gap: 6px"><div style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em">Seconds</div><div style="font-size: 15px; color: #55576A">from form fill to first text, while your lead is still on the page.</div></div>
-<div style="display: flex; flex-direction: column; gap: 6px"><div style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em">Read</div><div style="font-size: 15px; color: #55576A">receipts on every confirmation, so reps know who saw the reminder.</div></div>
-<div style="display: flex; flex-direction: column; gap: 6px"><div style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em">0 days</div><div style="font-size: 15px; color: #55576A">of A2P 10DLC registration. Start the day your numbers are live.</div></div>
+<section style="border-bottom: 1px solid #ECECF0; padding: 0 24px">
+<div style="max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); border-left: 1px solid #ECECF0">
+<div class="tk rv rv1" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1; color: {{accent}}">2–3x</div><div style="font-size: 15px; color: #55576A">higher reply rates than SMS, as reported by iMessage providers*</div></div>
+<div class="tk rv rv2" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1">Seconds</div><div style="font-size: 15px; color: #55576A">from form fill to first text, while your lead is still on the page.</div></div>
+<div class="tk rv rv3" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1">Read</div><div style="font-size: 15px; color: #55576A">receipts on every confirmation, so reps know who saw the reminder.</div></div>
+<div class="tk rv rv4" style="display: flex; flex-direction: column; gap: 8px; padding: 36px 28px; border-right: 1px solid #ECECF0"><div class="ds num" style="font-size: 56px; line-height: 1">0 days</div><div style="font-size: 15px; color: #55576A">of A2P 10DLC registration. Start the day your numbers are live.</div></div>
 </div>
 </section>
 
@@ -303,15 +361,15 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <section id="funnel" style="padding: 96px 24px 72px">
 <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
 <div style="display: flex; flex-direction: column; gap: 14px; max-width: 720px">
-<div style="font-size: 14px; font-weight: 700; color: {{accent}}; letter-spacing: .08em; text-transform: uppercase">Your funnel, on iMessage</div>
-<h2 style="margin: 0; font-size: 44px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 800">Email gets skimmed. Calls go to voicemail. Texts get read.</h2>
+<div class="mono eyebrow rv">Your funnel, on iMessage</div>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02"><em>Email gets skimmed. Calls go to voicemail.</em> <span class="mark">Texts get read.</span></h2>
 <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #55576A">B2Blue plugs into the four moments where B2B pipeline leaks, and puts a real conversation in the gap.</p>
 </div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
-<div style="border: 1px solid #ECECF0; border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div style="font-size: 13px; font-weight: 700; color: {{accent}}">01 · Speed to lead</div><h3 style="margin: 0; font-size: 20px; font-weight: 700">Text the lead before they close the tab</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">A demo request, trial signup or pricing page form fires a personal iMessage from your rep in seconds.</p></div>
-<div style="border: 1px solid #ECECF0; border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div style="font-size: 13px; font-weight: 700; color: {{accent}}">02 · Booking</div><h3 style="margin: 0; font-size: 20px; font-weight: 700">Book the demo in the thread</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">Offer two times, get a reply, send the invite. No calendar link tennis, no email chain.</p></div>
-<div style="border: 1px solid #ECECF0; border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div style="font-size: 13px; font-weight: 700; color: {{accent}}">03 · Show rate</div><h3 style="margin: 0; font-size: 20px; font-weight: 700">Remind them from a number they already answered</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">Confirmations and day-of reminders land in the same thread, with read receipts so reps see who&#39;s coming.</p></div>
-<div style="border: 1px solid #ECECF0; border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div style="font-size: 13px; font-weight: 700; color: {{accent}}">04 · Follow-up</div><h3 style="margin: 0; font-size: 20px; font-weight: 700">Rescue no-shows and stalled deals</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">Rebook a missed demo in one text. Nudge the champion after the proposal goes out.</p></div>
+<div class="card rv rv1" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div class="mono" style="color: {{accent}}">01 · Speed to lead</div><h3 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em">Text the lead before they close the tab</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">A demo request, trial signup or pricing page form fires a personal iMessage from your rep in seconds.</p></div>
+<div class="card rv rv2" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div class="mono" style="color: {{accent}}">02 · Booking</div><h3 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em">Book the demo in the thread</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">Offer two times, get a reply, send the invite. No calendar link tennis, no email chain.</p></div>
+<div class="card rv rv3" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div class="mono" style="color: {{accent}}">03 · Show rate</div><h3 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em">Remind them from a number they already answered</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">Confirmations and day-of reminders land in the same thread, with read receipts so reps see who&#39;s coming.</p></div>
+<div class="card rv rv4" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 26px; display: flex; flex-direction: column; gap: 12px"><div class="mono" style="color: {{accent}}">04 · Follow-up</div><h3 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em">Rescue no-shows and stalled deals</h3><p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #55576A">Rebook a missed demo in one text. Nudge the champion after the proposal goes out.</p></div>
 </div>
 </div>
 </section>
@@ -320,8 +378,8 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <section id="why" style="padding: 72px 24px 96px; background: #FFFFFF">
 <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
 <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
-<div style="font-size: 14px; font-weight: 700; color: {{accent}}; letter-spacing: .08em; text-transform: uppercase">Why iMessage</div>
-<h2 style="margin: 0; font-size: 44px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 800">More replies, more sales</h2>
+<div class="mono eyebrow rv">Why iMessage</div>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02">More replies, <em>more sales.</em></h2>
 <div role="group" aria-label="Compare channels" style="display: inline-flex; align-self: flex-start; background: #F2F2F7; border-radius: 14px; padding: 4px; gap: 4px">
 <button type="button" onClick="{{pickSms}}" style="{{smsBtn}}">SMS</button>
 <button type="button" onClick="{{pickIm}}" style="{{imBtn}}">iMessage</button>
@@ -360,9 +418,9 @@ details[open] .bt-plus{transform:rotate(45deg)}
 
 <!-- SHOW RATE CALCULATOR -->
 <section id="showrate" style="padding: 0 24px 96px">
-<div style="max-width: 1180px; margin: 0 auto; background: #F6F7F9; color: #0B0B10; border-radius: 28px; padding: 56px 48px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center">
+<div class="tk rv" style="max-width: 1180px; margin: 0 auto; background-color: #F6F7F9; color: #0B0B10; border-radius: 28px; padding: 56px 48px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center">
 <div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
-<h2 style="margin: 0; font-size: 38px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 800">What&#39;s a better show rate worth?</h2>
+<h2 class="ds" style="margin: 0; font-size: clamp(34px, 4vw, 50px); line-height: 1.04">What&#39;s a better show rate <em>worth?</em></h2>
 <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #55576A">Plug in your own numbers. Every no-show is a demo your team already paid to book.</p>
 <label for="bt-demos" style="font-size: 14px; color: #55576A; display: flex; justify-content: space-between; padding-top: 6px"><span>Demos booked per month</span><strong style="color: #0B0B10; font-size: 18px">{{demos}}</strong></label>
 <input id="bt-demos" type="range" min="10" max="400" step="10" value="{{demos}}" onChange="{{onDemos}}" style="width: 100%">
@@ -373,9 +431,9 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <p style="margin: 0; font-size: 12.5px; color: #6E6E73; line-height: 1.5">Starting values are examples, not benchmarks. Results depend on your funnel.</p>
 </div>
 <div style="flex: 1 1 420px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px">
-<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held today</div><div style="font-size: 36px; font-weight: 800; color: #0B0B10">{{heldNow}}</div></div>
-<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held at your target</div><div style="font-size: 36px; font-weight: 800; color: {{accent}}">{{heldNext}}</div></div>
-<div style="grid-column: 1 / -1; background: {{accent}}; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px; color: #FFFFFF"><div style="font-size: 13px; color: #FFFFFF">Extra demos held per year</div><div style="font-size: 44px; font-weight: 800">+{{extraYear}}</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held today</div><div class="ds num" style="font-size: 52px; line-height: 1; color: #0B0B10">{{heldNow}}</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px"><div style="font-size: 13px; color: #6E6E73">Demos held at your target</div><div class="ds num" style="font-size: 52px; line-height: 1; color: {{accent}}">{{heldNext}}</div></div>
+<div style="grid-column: 1 / -1; background: {{accent}}; border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 6px; color: #FFFFFF"><div style="font-size: 13px; color: #FFFFFF">Extra demos held per year</div><div class="ds num" style="font-size: 64px; line-height: 1">+{{extraYear}}</div></div>
 </div>
 </div>
 </section>
@@ -384,13 +442,13 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <section id="how" style="padding: 24px 24px 96px">
 <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
 <div style="display: flex; flex-direction: column; gap: 14px; max-width: 640px">
-<div style="font-size: 14px; font-weight: 700; color: {{accent}}; letter-spacing: .08em; text-transform: uppercase">How it works</div>
-<h2 style="margin: 0; font-size: 44px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 800">Live this week. Running on autopilot after that.</h2>
+<div class="mono eyebrow rv">How it works</div>
+<h2 class="ds rv" style="margin: 0; font-size: clamp(36px, 4.8vw, 60px); line-height: 1.02">Live this week. <em>Running on autopilot after that.</em></h2>
 </div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
-<div style="border: 1px solid #ECECF0; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: {{accent}}; display: grid; place-items: center; font-weight: 800; font-size: 18px">1</div><h3 style="margin: 0; font-size: 21px; font-weight: 700">We set up your reps</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Dedicated iPhone numbers for your SDRs and AEs, hosted and monitored for you.</p></div>
-<div style="border: 1px solid #ECECF0; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: {{accent}}; display: grid; place-items: center; font-weight: 800; font-size: 18px">2</div><h3 style="margin: 0; font-size: 21px; font-weight: 700">Wire it into your funnel</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Demo request, meeting booked, no-show, deal stage change. Connect your CRM, Zapier, Make or our API.</p></div>
-<div style="border: 1px solid #ECECF0; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: {{accent}}; display: grid; place-items: center; font-weight: 800; font-size: 18px">3</div><h3 style="margin: 0; font-size: 21px; font-weight: 700">Reps work replies anywhere</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Every conversation lands in one shared inbox. Tag by stage, filter by rep and reply from a laptop or phone.</p></div>
+<div class="card rv rv1" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: {{accent}}; display: grid; place-items: center; font-size: 26px">1</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">We set up your reps</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Dedicated iPhone numbers for your SDRs and AEs, hosted and monitored for you.</p></div>
+<div class="card rv rv2" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: {{accent}}; display: grid; place-items: center; font-size: 26px">2</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">Wire it into your funnel</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Demo request, meeting booked, no-show, deal stage change. Connect your CRM, Zapier, Make or our API.</p></div>
+<div class="card rv rv3" style="border: 1px solid #ECECF0; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><div class="ds" style="width: 44px; height: 44px; border-radius: 12px; background: #E8F1FF; color: {{accent}}; display: grid; place-items: center; font-size: 26px">3</div><h3 style="margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.01em">Reps work replies anywhere</h3><p style="margin: 0; font-size: 16px; line-height: 1.55; color: #55576A">Every conversation lands in one shared inbox. Tag by stage, filter by rep and reply from a laptop or phone.</p></div>
 </div>
 </div>
 </section>
@@ -398,27 +456,28 @@ details[open] .bt-plus{transform:rotate(45deg)}
 <!-- FAQ -->
 <section style="padding: 24px 24px 96px">
 <div style="max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0 0 16px; font-size: 36px; letter-spacing: -0.03em; font-weight: 800; text-align: center">Questions</h2>
-<details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Is this real iMessage?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Yes. Every message is sent from a real iPhone number through Apple&#39;s Messages app, so it arrives as a native iMessage with read receipts and typing indicators.</p></details>
-<details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Does it work with our CRM?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Triggers come from your CRM, forms or scheduling tool through Zapier, Make or our API. Common setups fire on a demo request, a booked meeting and a no-show.</p></details>
-<details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">What happens with Android users?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">They get a regular text from the same number, so no lead falls through the cracks.</p></details>
-<details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Are there sending limits?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Messages are unlimited. New conversations are paced per number, about 50 a day, to keep each number healthy. More reps, more numbers.</p></details>
-<details style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Can we cold blast a purchased list?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">No. B2Blue is built for one-to-one conversations with leads who opted in, like demo requests and booked meetings. That&#39;s what keeps reply rates high and numbers healthy.</p></details>
+<h2 class="ds rv" style="margin: 0 0 20px; font-size: clamp(36px, 4.4vw, 54px); line-height: 1.02; text-align: center">Questions, <em>answered.</em></h2>
+<details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Is this real iMessage?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Yes. Every message is sent from a real iPhone number through Apple&#39;s Messages app, so it arrives as a native iMessage with read receipts and typing indicators.</p></details>
+<details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Does it work with our CRM?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Triggers come from your CRM, forms or scheduling tool through Zapier, Make or our API. Common setups fire on a demo request, a booked meeting and a no-show.</p></details>
+<details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">What happens with Android users?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">They get a regular text from the same number, so no lead falls through the cracks.</p></details>
+<details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Are there sending limits?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">Messages are unlimited. New conversations are paced per number, about 50 a day, to keep each number healthy. More reps, more numbers.</p></details>
+<details class="rv" style="border: 1px solid #E5E5EA; border-radius: 16px; padding: 18px 22px"><summary style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 17px">Can we cold blast a purchased list?<span class="bt-plus" style="font-size: 22px; color: {{accent}}; transition: transform .2s">+</span></summary><p style="margin: 12px 0 0; color: #55576A; line-height: 1.6">No. B2Blue is built for one-to-one conversations with leads who opted in, like demo requests and booked meetings. That&#39;s what keeps reply rates high and numbers healthy.</p></details>
 </div>
 </section>
 
 <!-- FINAL CTA -->
 <section id="book" style="padding: 0 24px 96px">
-<div style="max-width: 1180px; margin: 0 auto; background: #F6F7F9; border-radius: 28px; padding: 72px 32px; display: flex; flex-direction: column; gap: 22px; align-items: center; text-align: center">
-<h2 style="margin: 0; font-size: clamp(32px, 4.6vw, 52px); line-height: 1.06; letter-spacing: -0.03em; font-weight: 800; max-width: 820px">Reach a lead within the hour and you&#39;re 7x more likely to qualify them.</h2>
-<p style="margin: 0; font-size: 18px; line-height: 1.55; color: #55576A; max-width: 560px">B2Blue reaches them in seconds.</p>
-<a href="https://cal.com/jacob-loving-twobz4/creativerize" target="_blank" rel="noopener" style="background: {{accent}}; color: #FFFFFF; padding: 16px 30px; border-radius: 14px; font-weight: 600; font-size: 17px">Book a demo</a>
-<p style="margin: 0; font-size: 12.5px; color: #6E6E73">Source: Oldroyd, McElheran &amp; Elkington, &ldquo;The Short Life of Online Sales Leads,&rdquo; Harvard Business Review, 2011 (audit of 2,241 U.S. companies).</p>
+<div class="dark" style="max-width: 1180px; margin: 0 auto; border-radius: 28px; padding: 88px 32px 40px; display: flex; flex-direction: column; gap: 24px; align-items: center; text-align: center">
+<h2 class="ds" style="margin: 0; font-size: clamp(38px, 5.6vw, 72px); line-height: 1; max-width: 900px">Reach a lead within the hour <em>and you&#39;re 7x more likely to qualify them.</em></h2>
+<p style="margin: 0; font-size: 18px; line-height: 1.55; color: #A1A1AA; max-width: 560px">B2Blue reaches them in seconds.</p>
+<a href="https://cal.com/jacob-loving-twobz4/creativerize" target="_blank" rel="noopener" class="btn" style="background: {{accent}}; color: #FFFFFF; padding: 15px 26px; border-radius: 12px; font-weight: 500; font-size: 16px">Book a demo</a>
+<p style="margin: 0; font-size: 12.5px; color: #8E8E96">Source: Oldroyd, McElheran &amp; Elkington, &ldquo;The Short Life of Online Sales Leads,&rdquo; Harvard Business Review, 2011 (audit of 2,241 U.S. companies).</p>
 </div>
 </section>
 
-<footer style="border-top: 1px solid #ECECF0; padding: 32px 24px">
+<footer style="padding: 8px 24px 40px">
 <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; font-size: 13px; color: #6E6E73">
+<span class="ds" style="font-size: 22px; color: #0B0B10">B2Blue</span>
 <span>© 2026 B2Blue</span>
 <span>*Reply-rate lift is as reported by iMessage API providers.</span>
 <span>iMessage is a trademark of Apple Inc. B2Blue is not affiliated with Apple.</span>
