@@ -113,7 +113,10 @@ page = f'''<!doctype html>
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://b2blue.chat/">
 <link rel="canonical" href="https://b2blue.chat/">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 {head_css}
 </head>
 <body>

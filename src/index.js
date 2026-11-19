@@ -439,7 +439,7 @@ export default {
     if (host === "www.b2blue.chat") return Response.redirect(SITE_URL + url.pathname, 301);
     if (host === "b2blue.chat") {
       if (url.pathname === "/") return env.ASSETS.fetch(new Request(new URL("/site/", url), request));
-      if (url.pathname.startsWith("/site/") || url.pathname === "/favicon.svg") return env.ASSETS.fetch(request);
+      if (url.pathname.startsWith("/site/") || url.pathname.startsWith("/icons/") || ["/favicon.ico", "/apple-touch-icon.png", "/site.webmanifest"].includes(url.pathname)) return env.ASSETS.fetch(request);
       return Response.redirect(SITE_URL + "/", 302);
     }
     // Old addresses
